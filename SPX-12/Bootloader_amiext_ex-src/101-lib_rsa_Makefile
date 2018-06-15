@@ -1,0 +1,11 @@
+--- u-boot-2013.07/lib/rsa/Makefile	2017-02-10 15:59:04.739026532 -0500
++++ uboot.new/lib/rsa/Makefile	2017-02-10 16:00:36.365297723 -0500
+@@ -27,7 +27,7 @@
+ 
+ LIB	= $(obj)librsa.o
+ 
+-ifdef CONFIG_FIT_SIGNATURE
++ifeq ($(filter y,$(CONFIG_SPX_FEATURE_SECURE_BOOT_SUPPORT) $(CONFIG_FIT_SIGNATURE)),)
+ COBJS-$(CONFIG_RSA) += rsa-verify.o
+ endif
+ 

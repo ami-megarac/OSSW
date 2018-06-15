@@ -1,0 +1,101 @@
+--- linux-3.14.17/arch/arm/Kconfig	2014-08-14 09:38:34.000000000 +0800
++++ linux-3.14.17-ami/arch/arm/Kconfig	2016-06-30 16:54:11.758753965 +0800
+@@ -234,7 +234,7 @@
+ 
+ config ARM_PATCH_PHYS_VIRT
+ 	bool "Patch physical to virtual translations at runtime" if EMBEDDED
+-	default y
++	default n
+ 	depends on !XIP_KERNEL && MMU
+ 	depends on !ARCH_REALVIEW || !SPARSEMEM
+ 	help
+@@ -295,14 +295,35 @@
+ 	  Select if you want MMU-based virtualised addressing space
+ 	  support by paged memory management. If unsure, say 'Y'.
+ 
++config AUTO_IRQ_BALANCE
++    bool "Support for setting IRQ CPU affinity to all Processors"
++    default n
++
+ #
+ # The "ARM system type" choice list is ordered alphabetically by option
+ # text.  Please add new entries in the option alphabetic order.
+ #
+ choice
+-	prompt "ARM system type"
+-	default ARCH_VERSATILE if !MMU
+-	default ARCH_MULTIPLATFORM if MMU
++  prompt "ARM system type"
++  default ARCH_ORION
++
++ config ARCH_ORION
++  bool "Emulex's Orion"
++  select SOC_SE_PILOT4
++  select HAVE_ARM_SCU if SMP 
++  select HAVE_ARM_TWD if SMP
++  select GENERIC_TIME
++  select GENERIC_CLOCKEVENTS
++  select CLKDEV_LOOKUP
++  select ARM_GIC
++  select ARM_AMBA
++  select HAVE_SMP
++  select CACHE_L2X0
++  select COMMON_CLK
++  help
++    This is an evaluation board ORION based on Emulex's PILOT-4 SOC
++    If you would like to build your kernel to run on one of these boards
++    then you must say 'Y' here. Otherwise say 'N'
+ 
+ config ARCH_MULTIPLATFORM
+ 	bool "Allow multiple platforms to be selected"
+@@ -977,6 +998,8 @@
+ 
+ source "arch/arm/mach-msm/Kconfig"
+ 
++source "arch/arm/mach-pilot/Kconfig"
++
+ source "arch/arm/mach-moxart/Kconfig"
+ 
+ source "arch/arm/mach-mv78xx0/Kconfig"
+@@ -1058,6 +1081,11 @@
+ source "arch/arm/mach-zynq/Kconfig"
+ 
+ # Definitions to make life easier
++config SOC_SE_PILOT4
++ bool "PILOT-IV SOC Support"
++ select CPU_V7
++ default y if ARCH_ORION
++
+ config ARCH_ACORN
+ 	bool
+ 
+@@ -1087,6 +1115,11 @@
+ 	select CLKSRC_MMIO
+ 	select CLKSRC_OF if OF
+ 
++config FLASH_OPERATION_MODE_MASK
++    hex "Flash Operation Mode Mask"
++    depends on SOC_SE_PILOT4
++    default "0x00010003"
++
+ source "arch/arm/firmware/Kconfig"
+ 
+ source arch/arm/mm/Kconfig
+@@ -1524,7 +1557,7 @@
+ 	  places. If unsure say N here.
+ 
+ config HAVE_ARM_SCU
+-	bool
++	bool 
+ 	help
+ 	  This option enables support for the ARM system coherency unit
+ 
+@@ -1835,7 +1868,7 @@
+ 	range 11 64 if ARCH_SHMOBILE_LEGACY
+ 	default "12" if SOC_AM33XX
+ 	default "9" if SA1111 || ARCH_EFM32
+-	default "11"
++	default "13"
+ 	help
+ 	  The kernel memory allocator divides physically contiguous memory
+ 	  blocks into "zones", where each zone is a power of two number of

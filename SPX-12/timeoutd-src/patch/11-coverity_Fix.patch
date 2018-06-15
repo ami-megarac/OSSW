@@ -1,0 +1,15 @@
+--- test/data/timeoutd.c	2017-09-14 17:07:10.588586000 +0530
++++ data/timeoutd.c	2017-09-14 17:08:23.231665575 +0530
+@@ -926,7 +926,11 @@
+     strncpy(host, utmpp->ut_host, 16);	/* get host name */
+     host[16] = '\0';
+     strcpy(dev, "/dev/");   /* add "/dev/" directory prefix */
+-    strcat(dev, utmpp->ut_line);    /* append basename of port */
++    if (strlen(utmpp->ut_line) + 1 > sizeof(dev))
++    {
++    	printf("Buffer size very small");
++    }
++    strncat(dev, utmpp->ut_line,sizeof(dev)-strlen(dev)-1);  /* append basename of port */
+     if (stat(dev, pstat))   /* if can't get status for port */
+     {
+         sprintf(errmsg, "Can't get status of user %s's terminal (%s)\n",

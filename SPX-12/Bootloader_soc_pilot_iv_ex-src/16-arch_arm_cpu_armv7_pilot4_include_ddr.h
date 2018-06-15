@@ -1,0 +1,197 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/pilot4/include/ddr.h	1969-12-31 19:00:00.000000000 -0500
++++ mywork/arch/arm/cpu/armv7/pilot4/include/ddr.h	2015-09-25 06:06:48.640337146 -0400
+@@ -0,0 +1,194 @@
++/*******************************************************************************
++ *
++ * Copyright (C) 2004-2014 Emulex. All rights reserved.
++ * EMULEX is a trademark of Emulex.
++ * www.emulex.com
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of version 2 of the GNU General Public License as published by the
++ * Free Software Foundation.
++ * This program is distributed in the hope that it will be useful. ALL EXPRESS
++ * OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED
++ * WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
++ * NON-INFRINGEMENT, ARE DISCLAIMED, EXCEPT TO THE EXTENT THAT SUCH DISCLAIMERS
++ * ARE HELD TO BE LEGALLY INVALID. See the GNU General Public License for more
++ * details, a copy of which can be found in the file COPYING included
++ * with this package.
++ *
++ ********************************************************************************/
++
++// Defines for MC registers.
++#define MC_REG_ADDRESS00 (DDR_REG_BASE + 0x0)
++#define MC_REG_ADDRESS04 (DDR_REG_BASE + 0x04) 
++#define MC_REG_ADDRESS08 (DDR_REG_BASE + 0x08)
++#define MC_REG_ADDRESS0C (DDR_REG_BASE + 0x0C)
++#define MC_REG_ADDRESS10 (DDR_REG_BASE + 0x10)
++#define MC_REG_ADDRESS14 (DDR_REG_BASE + 0x14)
++#define MC_REG_ADDRESS18 (DDR_REG_BASE + 0x18)
++#define MC_REG_ADDRESS1C (DDR_REG_BASE + 0x1C)
++#define MC_REG_ADDRESS20 (DDR_REG_BASE + 0x20)
++#define MC_REG_ADDRESS24 (DDR_REG_BASE + 0x24)
++#define MC_REG_ADDRESS28 (DDR_REG_BASE + 0x28)
++#define MC_REG_ADDRESS2C (DDR_REG_BASE + 0x2C)
++#define MC_REG_ADDRESS30 (DDR_REG_BASE + 0x30)
++#define MC_REG_ADDRESS34 (DDR_REG_BASE + 0x34)
++#define MC_REG_ADDRESS38 (DDR_REG_BASE + 0x38)
++#define MC_REG_ADDRESS3C (DDR_REG_BASE + 0x3C)
++#define MC_REG_ADDRESS40 (DDR_REG_BASE + 0x40)
++#define MC_REG_ADDRESS44 (DDR_REG_BASE + 0x44)
++#define MC_REG_ADDRESS48 (DDR_REG_BASE + 0x48)
++#define MC_REG_ADDRESS4C (DDR_REG_BASE + 0x4C)
++#define MC_REG_ADDRESS50 (DDR_REG_BASE + 0x50)
++#define MC_REG_ADDRESS54 (DDR_REG_BASE + 0x54)
++#define MC_REG_ADDRESS58 (DDR_REG_BASE + 0x58)
++#define MC_REG_ADDRESS5C (DDR_REG_BASE + 0x5C)
++#define MC_REG_ADDRESS60 (DDR_REG_BASE + 0x60)
++#define MC_REG_ADDRESS64 (DDR_REG_BASE + 0x64)
++#define MC_REG_ADDRESS68 (DDR_REG_BASE + 0x68)
++#define MC_REG_ADDRESS6C (DDR_REG_BASE + 0x6C)  
++#define MC_REG_ADDRESS70 (DDR_REG_BASE + 0x70) 
++#define MC_REG_ADDRESS74 (DDR_REG_BASE + 0x74)
++#define MC_REG_ADDRESS78 (DDR_REG_BASE + 0x78) 
++#define MC_REG_ADDRESS7C (DDR_REG_BASE + 0x7C)
++#define MC_REG_ADDRESS80 (DDR_REG_BASE + 0x80)    
++
++// Defines for MC registers used for PHY.
++#define PHY_REG_ADDRESS00 (DDR_REG_BASE + 0x8000)
++#define PHY_REG_ADDRESS04 (DDR_REG_BASE + 0x8004)
++
++// Defines for PHY registers.
++#define APB_REG_ADDRESS00 (DDR_REG_BASE + 0xc000)
++#define APB_REG_ADDRESS04 (DDR_REG_BASE + 0xc004)
++#define APB_REG_ADDRESS08 (DDR_REG_BASE + 0xc008)
++#define APB_REG_ADDRESS0C (DDR_REG_BASE + 0xc00c)
++#define APB_REG_ADDRESS10 (DDR_REG_BASE + 0xc010)
++#define APB_REG_ADDRESS14 (DDR_REG_BASE + 0xc014)
++#define APB_REG_ADDRESS18 (DDR_REG_BASE + 0xc018)
++#define APB_REG_ADDRESS1C (DDR_REG_BASE + 0xc01c)
++#define APB_REG_ADDRESS20 (DDR_REG_BASE + 0xc020)
++#define APB_REG_ADDRESS24 (DDR_REG_BASE + 0xc024)  
++#define APB_REG_ADDRESS28 (DDR_REG_BASE + 0xc028)
++#define APB_REG_ADDRESS2C (DDR_REG_BASE + 0xc02c)
++#define APB_REG_ADDRESS30 (DDR_REG_BASE + 0xc030) 
++#define APB_REG_ADDRESS34 (DDR_REG_BASE + 0xc034)
++#define APB_REG_ADDRESS38 (DDR_REG_BASE + 0xc038)
++#define APB_REG_ADDRESS3C (DDR_REG_BASE + 0xc03c)
++#define APB_REG_ADDRESS40 (DDR_REG_BASE + 0xc040)
++#define APB_REG_ADDRESS44 (DDR_REG_BASE + 0xc044)
++#define APB_REG_ADDRESS48 (DDR_REG_BASE + 0xc048)
++#define APB_REG_ADDRESS4C (DDR_REG_BASE + 0xc04c)
++#define APB_REG_ADDRESS50 (DDR_REG_BASE + 0xc050)
++#define APB_REG_ADDRESS54 (DDR_REG_BASE + 0xc054)
++#define APB_REG_ADDRESS58 (DDR_REG_BASE + 0xc058)
++#define APB_REG_ADDRESS5C (DDR_REG_BASE + 0xc05c)
++#define APB_REG_ADDRESS60 (DDR_REG_BASE + 0xc060)
++#define APB_REG_ADDRESS64 (DDR_REG_BASE + 0xc064)
++#define APB_REG_ADDRESS68 (DDR_REG_BASE + 0xc068)
++#define APB_REG_ADDRESS6C (DDR_REG_BASE + 0xc06c)
++#define APB_REG_ADDRESS70 (DDR_REG_BASE + 0xc070)
++#define APB_REG_ADDRESS74 (DDR_REG_BASE + 0xc074)
++#define APB_REG_ADDRESS78 (DDR_REG_BASE + 0xc078)
++#define APB_REG_ADDRESS7C (DDR_REG_BASE + 0xc07c)
++#define APB_REG_ADDRESS80 (DDR_REG_BASE + 0xc080)
++#define APB_REG_ADDRESS84 (DDR_REG_BASE + 0xc084)
++#define APB_REG_ADDRESS88 (DDR_REG_BASE + 0xc088)
++#define APB_REG_ADDRESS8C (DDR_REG_BASE + 0xc08c)
++#define APB_REG_ADDRESS90 (DDR_REG_BASE + 0xc090)
++#define APB_REG_ADDRESS94 (DDR_REG_BASE + 0xc094)
++#define APB_REG_ADDRESS98 (DDR_REG_BASE + 0xc098)
++#define APB_REG_ADDRESS9C (DDR_REG_BASE + 0xc09c)
++#define APB_REG_ADDRESSA0 (DDR_REG_BASE + 0xc0a0)
++#define APB_REG_ADDRESSA4 (DDR_REG_BASE + 0xc0a4)
++#define APB_REG_ADDRESSA8 (DDR_REG_BASE + 0xc0a8)
++#define APB_REG_ADDRESSAC (DDR_REG_BASE + 0xc0ac)
++#define APB_REG_ADDRESSB0 (DDR_REG_BASE + 0xc0b0)
++#define APB_REG_ADDRESSB4 (DDR_REG_BASE + 0xc0b4)
++#define APB_REG_ADDRESSB8 (DDR_REG_BASE + 0xc0b8)
++#define APB_REG_ADDRESSBC (DDR_REG_BASE + 0xc0bc)
++#define APB_REG_ADDRESSC0 (DDR_REG_BASE + 0xc0c0)
++#define APB_REG_ADDRESSC4 (DDR_REG_BASE + 0xc0c4)  
++#define APB_REG_ADDRESSC8 (DDR_REG_BASE + 0xc0c8)
++#define APB_REG_ADDRESSCC (DDR_REG_BASE + 0xc0cc)
++#define APB_REG_ADDRESSD0 (DDR_REG_BASE + 0xc0d0)
++#define APB_REG_ADDRESSD4 (DDR_REG_BASE + 0xc0d4)
++#define APB_REG_ADDRESSD8 (DDR_REG_BASE + 0xc0d8)
++#define APB_REG_ADDRESSDC (DDR_REG_BASE + 0xc0dc)
++#define APB_REG_ADDRESSE0 (DDR_REG_BASE + 0xc0e0)
++#define APB_REG_ADDRESSE4 (DDR_REG_BASE + 0xc0e4)
++#define APB_REG_ADDRESSE8 (DDR_REG_BASE + 0xc0e8)
++#define APB_REG_ADDRESSEC (DDR_REG_BASE + 0xc0ec)
++#define APB_REG_ADDRESSF0 (DDR_REG_BASE + 0xc0f0)
++#define APB_REG_ADDRESSF4 (DDR_REG_BASE + 0xc0f4)
++#define APB_REG_ADDRESSF8 (DDR_REG_BASE + 0xc0f8)
++#define APB_REG_ADDRESSFC (DDR_REG_BASE + 0xc0fc)
++#define APB_REG_ADDRESS100 (DDR_REG_BASE + 0xc100)
++#define APB_REG_ADDRESS104 (DDR_REG_BASE + 0xc104)
++#define APB_REG_ADDRESS108 (DDR_REG_BASE + 0xc108)  
++#define APB_REG_ADDRESS10C (DDR_REG_BASE + 0xc10c)
++#define APB_REG_ADDRESS110 (DDR_REG_BASE + 0xc110)
++#define APB_REG_ADDRESS114 (DDR_REG_BASE + 0xc114)
++#define APB_REG_ADDRESS118 (DDR_REG_BASE + 0xc118)   
++#define APB_REG_ADDRESS11C (DDR_REG_BASE + 0xc11c)
++#define APB_REG_ADDRESS120 (DDR_REG_BASE + 0xc120)
++#define APB_REG_ADDRESS124 (DDR_REG_BASE + 0xc124)
++#define APB_REG_ADDRESS128 (DDR_REG_BASE + 0xc128)   
++#define APB_REG_ADDRESS12C (DDR_REG_BASE + 0xc12c)
++#define APB_REG_ADDRESS130 (DDR_REG_BASE + 0xc130)
++#define APB_REG_ADDRESS134 (DDR_REG_BASE + 0xc134)
++#define APB_REG_ADDRESS138 (DDR_REG_BASE + 0xc138)   
++#define APB_REG_ADDRESS13C (DDR_REG_BASE + 0xc13c)
++#define APB_REG_ADDRESS140 (DDR_REG_BASE + 0xc140)
++#define APB_REG_ADDRESS144 (DDR_REG_BASE + 0xc144)
++#define APB_REG_ADDRESS148 (DDR_REG_BASE + 0xc148)   
++#define APB_REG_ADDRESS14C (DDR_REG_BASE + 0xc14c)
++#define APB_REG_ADDRESS154 (DDR_REG_BASE + 0xc154)
++#define APB_REG_ADDRESS158 (DDR_REG_BASE + 0xc158)
++#define APB_REG_ADDRESS164 (DDR_REG_BASE + 0xc164)
++#define APB_REG_ADDRESS168 (DDR_REG_BASE + 0xc168)   
++#define APB_REG_ADDRESS1D4 (DDR_REG_BASE + 0xc1d4)  
++#define APB_REG_ADDRESS1F0 (DDR_REG_BASE + 0xc1f0)
++#define APB_REG_ADDRESS1F4 (DDR_REG_BASE + 0xc1f4)
++#define APB_REG_ADDRESS1F8 (DDR_REG_BASE + 0xc1f8)   
++#define APB_REG_ADDRESS1FC (DDR_REG_BASE + 0xc1fc)
++#define APB_REG_ADDRESS200 (DDR_REG_BASE + 0xc200)
++#define APB_REG_ADDRESS204 (DDR_REG_BASE + 0xc204)
++#define APB_REG_ADDRESS208 (DDR_REG_BASE + 0xc208)  
++#define APB_REG_ADDRESS20C (DDR_REG_BASE + 0xc20c)
++#define APB_REG_ADDRESS210 (DDR_REG_BASE + 0xc210)
++#define APB_REG_ADDRESS214 (DDR_REG_BASE + 0xc214)
++#define APB_REG_ADDRESS218 (DDR_REG_BASE + 0xc218)  
++#define APB_REG_ADDRESS21C (DDR_REG_BASE + 0xc21c)
++  
++#define APB_REG_ADDRESS270 (DDR_REG_BASE + 0xc270)
++#define APB_REG_ADDRESS280 (DDR_REG_BASE + 0xc280)
++#define APB_REG_ADDRESS300 (DDR_REG_BASE + 0xc300)
++#define APB_REG_ADDRESS308 (DDR_REG_BASE + 0xc308)
++#define APB_REG_ADDRESS30C (DDR_REG_BASE + 0xc30c)
++
++// Defines for ECC and limit registers.						
++#define MAGM_VALUE       0x80ffffff
++#define UAGM_VALUE       0x00000000
++#if 0  
++#if defined (FPGA_DUT)
++#define LOWER_ECC_ADDRESS  (Bank1start + 0x2000)
++#define UPPER_ECC_ADDRESS  (LOWER_ECC_ADDRESS + 4*1024*1024 - 1)
++#else
++#define LOWER_ECC_ADDRESS 0x80800000
++#define UPPER_ECC_ADDRESS 0x83ffffff
++#endif
++#endif
++#define DDR_LPWR_LMEM_STACK       0x10002000
++// Defines for functions.
++void DELAY(tU32);
++void ddrcfg(tU8, tU8);
++tU8 gate_training(void);
++tU8 eye_training(tU32, tU32,tU8);
++tU8 fifo_training(tU8);
++void ddrsize_calc(tU8, tU8);
++//tU8 vref_training(void);
++
++//#define LMEMDDRTRAINVAR             (LMEMSTART + 0x00008000)
++
++
++
++

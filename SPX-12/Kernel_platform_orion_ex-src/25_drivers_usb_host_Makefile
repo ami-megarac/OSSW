@@ -1,0 +1,7 @@
+--- linux/drivers/usb/host/Makefile	2014-08-14 09:38:34.000000000 +0800
++++ linux.new/drivers/usb/host/Makefile	2016-12-19 17:11:35.841031544 +0800
+@@ -70,3 +70,4 @@
+ obj-$(CONFIG_USB_HCD_SSB)	+= ssb-hcd.o
+ obj-$(CONFIG_USB_FUSBH200_HCD)	+= fusbh200-hcd.o
+ obj-$(CONFIG_USB_FOTG210_HCD)	+= fotg210-hcd.o
++obj-$(CONFIG_USB_PILOT4_HCD)    += pilot/

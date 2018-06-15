@@ -1,0 +1,11 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/Makefile	2015-03-23 07:23:59.410458733 -0400
++++ mywork/arch/arm/cpu/armv7/Makefile	2015-02-27 06:41:35.938007263 -0500
+@@ -32,7 +32,7 @@
+ COBJS	+= cpu.o
+ COBJS	+= syslib.o
+ 
+-ifneq ($(CONFIG_AM33XX)$(CONFIG_OMAP44XX)$(CONFIG_OMAP54XX)$(CONFIG_TEGRA)$(CONFIG_MX6)$(CONFIG_TI814X),)
++ifneq ($(CONFIG_AM33XX)$(CONFIG_OMAP44XX)$(CONFIG_OMAP54XX)$(CONFIG_TEGRA)$(CONFIG_MX6)$(CONFIG_TI814X)$(CONFIG_ORION),)
+ SOBJS	+= lowlevel_init.o
+ endif
+ 

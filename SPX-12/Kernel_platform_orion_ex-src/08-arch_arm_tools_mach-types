@@ -1,0 +1,7 @@
+--- linux-3.14.17/arch/arm/tools/mach-types	2014-08-14 07:08:34.000000000 +0530
++++ linux-3.14.17.orion/arch/arm/tools/mach-types	2015-04-03 15:44:01.389148157 +0530
+@@ -1007,3 +1007,4 @@
+ eukrea_cpuimx28sd	MACH_EUKREA_CPUIMX28SD	EUKREA_CPUIMX28SD	4573
+ domotab			MACH_DOMOTAB		DOMOTAB			4574
+ pfla03			MACH_PFLA03		PFLA03			4575
++orion       MACH_ORION    ORION       5555

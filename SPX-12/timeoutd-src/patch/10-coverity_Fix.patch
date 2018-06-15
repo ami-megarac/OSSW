@@ -1,0 +1,79 @@
+--- timeoutd/data/timeoutd.c	2017-09-01 18:09:35.570854637 +0530
++++ newdata/timeoutd.c	2017-09-01 18:08:37.478852375 +0530
+@@ -233,6 +233,7 @@
+ int	argc;
+ char	*argv[];
+ {
++    char *duplicate={0};
+     signal(SIGTERM, shutdown);
+     signal(SIGHUP, reread_config);
+     signal(SIGCHLD, reapchild);
+@@ -289,9 +290,16 @@
+         {
+             case DAYMAX:
+ 		openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
++        duplicate= strdup(argv[1]);
++        if (duplicate == 0)
++        {
++           printf("Out of memory\n");
++        }//…process out of memory error; do not continue……
++
+ 		syslog(LOG_NOTICE,
+ 		       "User %s on %s exceeded maximum daily limit (%d minutes).  Login check failed.",
+-		       argv[1], argv[2], config[configline]->daymax);
++		       duplicate, argv[2], config[configline]->daymax);
++            free(duplicate);
+     		closelog();
+     		/*
+     		printf("\r\nLogin not permitted.  You have exceeded your maximum daily limit.\r\n");
+@@ -301,10 +309,17 @@
+     		exit(10);
+             case NOLOGIN:
+ 		openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
++        duplicate= strdup(argv[1]);
++        if (duplicate == 0)
++        {
++           printf("Out of memory\n");
++        }//…process out of memory error; do not continue……
++
+ 		syslog(LOG_NOTICE,
+ 		       "User %s not allowed to login on %s at this time.  Login check failed.",
+-		       argv[1], argv[2]);
++		       duplicate, argv[2]);
+     		closelog();
++            free(duplicate);
+     		/*
+     		printf("\r\nLogin not permitted at this time.  Please try again later.\r\n");
+     		*/
+@@ -313,15 +328,29 @@
+             case ACTIVE:
+ #ifdef DEBUG
+ 		openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
+-		syslog(SYSLOG_DEBUG, "User %s on %s passed login check.", argv[1], argv[2]);
++        duplicate= strdup(argv[1]);
++        if (duplicate == 0)
++        {
++           printf("Out of memory\n");
++        }//…process out of memory error; do not continue……
++
++		syslog(SYSLOG_DEBUG, "User %s on %s passed login check.", duplicate, argv[2]);
++            free(duplicate);
+             closelog();
+ #endif
+             free_wtmp();
+ 		exit(0);
+             default:
+ 		openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
++        duplicate= strdup(argv[1]);
++        if (duplicate == 0)
++        {
++           printf("Out of memory\n");
++        }//…process out of memory error; do not continue……
++
+ 		syslog(LOG_ERR, "Internal error checking user %s on %s - unexpected return from chk_timeout",
+-			argv[1], argv[2]);
++			duplicate, argv[2]);
++            free(duplicate);
+     		closelog();
+     		exit(30);
+         }

@@ -1,0 +1,10 @@
+--- linux-3.14.17/arch/arm/mach-pilot/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ linux-3.14.17.orion/arch/arm/mach-pilot/Makefile	2015-04-03 14:52:06.213240200 +0530
+@@ -0,0 +1,7 @@
++#
++# Makefile for the linux kernel.
++#
++# Object file lists.
++
++obj-y			:= setup.o irq.o time.o
++obj-$(CONFIG_SMP) += smp.o

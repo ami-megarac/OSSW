@@ -1,0 +1,115 @@
+From d225c4fe44ad94a30a5033e58594f2bebaa674f2 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Mon, 2 Jan 2017 14:55:16 +0000
+Subject: Fix race conditions in forwarding tests
+
+The forwarding tests sometimes seem to fail in a way that suggests ports
+are in use even though they shouldn't be.  Convert more of them to use a
+mux socket rather than relying on sleeps in the hope that that makes
+behaviour more consistent.
+
+Bug: https://bugzilla.mindrot.org/show_bug.cgi?id=2659
+Patch-Name: regress-forwarding-race.patch
+
+Last-Update: 2017-01-02
+---
+ regress/forwarding.sh | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/regress/forwarding.sh b/regress/forwarding.sh
+index 2539db9b..a1a4b13f 100644
+--- a/regress/forwarding.sh
++++ b/regress/forwarding.sh
+@@ -11,7 +11,6 @@ base=33
+ last=$PORT
+ fwd=""
+ CTL=$OBJ/ctl-sock
+-rm -f $CTL
+ 
+ for j in 0 1 2; do
+ 	for i in 0 1 2; do
+@@ -29,7 +28,8 @@ for p in ${SSH_PROTOCOLS}; do
+ 		q=$p
+ 	fi
+ 	trace "start forwarding, fork to background"
+-	${SSH} -$p -F $OBJ/ssh_config -f $fwd somehost sleep 10
++	rm -f $CTL
++	${SSH} -S $CTL -M -$p -F $OBJ/ssh_config -f $fwd somehost sleep 10
+ 
+ 	trace "transfer over forwarded channels and check result"
+ 	${SSH} -$q -F $OBJ/ssh_config -p$last -o 'ConnectionAttempts=4' \
+@@ -37,7 +37,7 @@ for p in ${SSH_PROTOCOLS}; do
+ 	test -s ${COPY}		|| fail "failed copy of ${DATA}"
+ 	cmp ${DATA} ${COPY}	|| fail "corrupted copy of ${DATA}"
+ 
+-	sleep 10
++	${SSH} -S $CTL -O exit somehost
+ done
+ 
+ for p in ${SSH_PROTOCOLS}; do
+@@ -75,7 +75,8 @@ for p in ${SSH_PROTOCOLS}; do
+ 	${SSH} -$p -F $OBJ/ssh_config -oClearAllForwardings=yes somehost true
+ 
+ 	trace "clear local forward proto $p"
+-	${SSH} -$p -f -F $OBJ/ssh_config -L ${base}01:127.0.0.1:$PORT \
++	rm -f $CTL
++	${SSH} -S $CTL -M -$p -f -F $OBJ/ssh_config -L ${base}01:127.0.0.1:$PORT \
+ 	    -oClearAllForwardings=yes somehost sleep 10
+ 	if [ $? != 0 ]; then
+ 		fail "connection failed with cleared local forwarding"
+@@ -85,10 +86,11 @@ for p in ${SSH_PROTOCOLS}; do
+ 		     >>$TEST_REGRESS_LOGFILE 2>&1 && \
+ 			fail "local forwarding not cleared"
+ 	fi
+-	sleep 10
++	${SSH} -S $CTL -O exit somehost
+ 	
+ 	trace "clear remote forward proto $p"
+-	${SSH} -$p -f -F $OBJ/ssh_config -R ${base}01:127.0.0.1:$PORT \
++	rm -f $CTL
++	${SSH} -S $CTL -M -$p -f -F $OBJ/ssh_config -R ${base}01:127.0.0.1:$PORT \
+ 	    -oClearAllForwardings=yes somehost sleep 10
+ 	if [ $? != 0 ]; then
+ 		fail "connection failed with cleared remote forwarding"
+@@ -98,7 +100,7 @@ for p in ${SSH_PROTOCOLS}; do
+ 		     >>$TEST_REGRESS_LOGFILE 2>&1 && \
+ 			fail "remote forwarding not cleared"
+ 	fi
+-	sleep 10
++	${SSH} -S $CTL -O exit somehost
+ done
+ 
+ for p in 2; do
+@@ -115,6 +117,7 @@ echo "LocalForward ${base}01 127.0.0.1:$PORT" >> $OBJ/ssh_config
+ echo "RemoteForward ${base}02 127.0.0.1:${base}01" >> $OBJ/ssh_config
+ for p in ${SSH_PROTOCOLS}; do
+ 	trace "config file: start forwarding, fork to background"
++	rm -f $CTL
+ 	${SSH} -S $CTL -M -$p -F $OBJ/ssh_config -f somehost sleep 10
+ 
+ 	trace "config file: transfer over forwarded channels and check result"
+@@ -129,15 +132,18 @@ done
+ for p in 2; do
+ 	trace "transfer over chained unix domain socket forwards and check result"
+ 	rm -f $OBJ/unix-[123].fwd
+-	${SSH} -f -F $OBJ/ssh_config -R${base}01:[$OBJ/unix-1.fwd] somehost sleep 10
+-	${SSH} -f -F $OBJ/ssh_config -L[$OBJ/unix-1.fwd]:[$OBJ/unix-2.fwd] somehost sleep 10
+-	${SSH} -f -F $OBJ/ssh_config -R[$OBJ/unix-2.fwd]:[$OBJ/unix-3.fwd] somehost sleep 10
+-	${SSH} -f -F $OBJ/ssh_config -L[$OBJ/unix-3.fwd]:127.0.0.1:$PORT somehost sleep 10
++	rm -f $CTL $CTL.[123]
++	${SSH} -S $CTL -M -f -F $OBJ/ssh_config -R${base}01:[$OBJ/unix-1.fwd] somehost sleep 10
++	${SSH} -S $CTL.1 -M -f -F $OBJ/ssh_config -L[$OBJ/unix-1.fwd]:[$OBJ/unix-2.fwd] somehost sleep 10
++	${SSH} -S $CTL.2 -M -f -F $OBJ/ssh_config -R[$OBJ/unix-2.fwd]:[$OBJ/unix-3.fwd] somehost sleep 10
++	${SSH} -S $CTL.3 -M -f -F $OBJ/ssh_config -L[$OBJ/unix-3.fwd]:127.0.0.1:$PORT somehost sleep 10
+ 	${SSH} -F $OBJ/ssh_config -p${base}01 -o 'ConnectionAttempts=4' \
+ 		somehost cat ${DATA} > ${COPY}
+ 	test -s ${COPY}			|| fail "failed copy ${DATA}"
+ 	cmp ${DATA} ${COPY}		|| fail "corrupted copy of ${DATA}"
+ 
+-	#wait
+-	sleep 10
++	${SSH} -S $CTL -O exit somehost
++	${SSH} -S $CTL.1 -O exit somehost
++	${SSH} -S $CTL.2 -O exit somehost
++	${SSH} -S $CTL.3 -O exit somehost
+ done

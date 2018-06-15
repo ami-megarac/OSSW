@@ -1,0 +1,11 @@
+--- linux-3.14.17/arch/arm/mm/Kconfig	2014-08-14 07:08:34.000000000 +0530
++++ linux-3.14.17.orion/arch/arm/mm/Kconfig	2015-04-15 15:25:27.278539357 +0530
+@@ -656,7 +656,7 @@
+ 	  make use of it. Say N for code that can run on CPUs without ThumbEE.
+ 
+ config ARM_VIRT_EXT
+-	bool
++	bool "ARM Virtual Extension Feature"
+ 	depends on MMU
+ 	default y if CPU_V7
+ 	help

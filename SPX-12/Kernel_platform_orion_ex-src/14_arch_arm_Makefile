@@ -1,0 +1,10 @@
+--- linux-3.14.17/arch/arm/Makefile	2014-08-14 07:08:34.000000000 +0530
++++ linux-3.14.17.orion/arch/arm/Makefile	2015-04-03 15:41:13.105153129 +0530
+@@ -141,6 +141,7 @@
+ 
+ # Machine directory name.  This list is sorted alphanumerically
+ # by CONFIG_* macro name.
++machine-$(CONFIG_ARCH_ORION)    += pilot
+ machine-$(CONFIG_ARCH_AT91)		+= at91
+ machine-$(CONFIG_ARCH_BCM)		+= bcm
+ machine-$(CONFIG_ARCH_BCM2835)		+= bcm2835

@@ -1,0 +1,44 @@
+diff -Naur data/timeout data_mod/timeout
+--- data/timeout	2016-02-17 11:55:30.975155473 +0530
++++ data_mod/timeout	2016-02-17 12:06:43.999177010 +0530
+@@ -7,6 +7,7 @@
+ PATH=/bin:/usr/bin:/sbin:/usr/sbin
+ 
+ PATHFUL_TIMEOUT="/usr/local/bin/timeoutd"
++PROCMONTOOL="/usr/local/bin/procmontool"
+ 
+ 
+ 
+@@ -34,13 +35,22 @@
+     mkdir /tmp/audit
+     echo "Starting Timeout Daemon Utility: timeoutd."
+     start-stop-daemon --start --quiet --exec $PATHFUL_TIMEOUT 
++    if [ -e ${PROCMONTOOL} ] ; then
++        ${PROCMONTOOL} -r -p ${PATHFUL_TIMEOUT}
++    fi
+     ;;
+   stop)
+     rm -rf /tmp/audit
+     echo "Stopping Timeout Daemon Utility: timeoutd."
++    if [ -e ${PROCMONTOOL} ] ; then
++        ${PROCMONTOOL} -d -p ${PATHFUL_TIMEOUT}
++    fi
+     start-stop-daemon --stop --quiet --exec $PATHFUL_TIMEOUT
+     ;;
+   restart)
++    if [ -e ${PROCMONTOOL} ] ; then
++        ${PROCMONTOOL} -d -p ${PATHFUL_TIMEOUT}
++    fi
+     start-stop-daemon --stop --quiet --exec $PATHFUL_TIMEOUT
+     
+     # We use the same script for both NFS and Flash 
+@@ -53,6 +63,9 @@
+     fi
+     
+     start-stop-daemon --start --quiet --exec $PATHFUL_TIMEOUT
++    if [ -e ${PROCMONTOOL} ] ; then
++        ${PROCMONTOOL} -r -p ${PATHFUL_TIMEOUT}
++    fi
+     ;;
+    *)
+     echo "Usage: /etc/init.d/timeout {start|stop|restart}"

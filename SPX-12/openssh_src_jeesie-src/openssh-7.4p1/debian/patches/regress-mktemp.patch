@@ -1,0 +1,167 @@
+From cc50ca70e3b438577c33a85147e2a68666deaad9 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Tue, 3 Jan 2017 12:09:42 +0000
+Subject: Create mux socket for regress in temp directory
+
+In some setups, creating the socket under OBJ may result in a path that
+is too long for a Unix domain socket.  Add a helper to let us portably
+create a temporary directory instead.
+
+Bug: https://bugzilla.mindrot.org/show_bug.cgi?id=2660
+Last-Update: 2017-01-03
+
+Patch-Name: regress-mktemp.patch
+---
+ Makefile.in           |  5 +++++
+ regress/forwarding.sh |  3 ++-
+ regress/mkdtemp.c     | 59 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ regress/multiplex.sh  |  3 ++-
+ regress/test-exec.sh  | 11 ++++++++++
+ 5 files changed, 79 insertions(+), 2 deletions(-)
+ create mode 100644 regress/mkdtemp.c
+
+diff --git a/Makefile.in b/Makefile.in
+index a6eb81ec..a00347e2 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -459,6 +459,10 @@ regress/check-perm$(EXEEXT): $(srcdir)/regress/check-perm.c $(REGRESSLIBS)
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(srcdir)/regress/check-perm.c \
+ 	$(LDFLAGS) -lssh -lopenbsd-compat -lssh -lopenbsd-compat $(LIBS)
+ 
++regress/mkdtemp$(EXEEXT): $(srcdir)/regress/mkdtemp.c $(REGRESSLIBS)
++	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(srcdir)/regress/mkdtemp.c \
++	$(LDFLAGS) -lssh -lopenbsd-compat -lssh -lopenbsd-compat $(LIBS)
++
+ UNITTESTS_TEST_HELPER_OBJS=\
+ 	regress/unittests/test_helper/test_helper.o \
+ 	regress/unittests/test_helper/fuzz.o
+@@ -557,6 +561,7 @@ regress-binaries: regress/modpipe$(EXEEXT) \
+ 	regress/setuid-allowed$(EXEEXT) \
+ 	regress/netcat$(EXEEXT) \
+ 	regress/check-perm$(EXEEXT) \
++	regress/mkdtemp$(EXEEXT) \
+ 	regress/unittests/sshbuf/test_sshbuf$(EXEEXT) \
+ 	regress/unittests/sshkey/test_sshkey$(EXEEXT) \
+ 	regress/unittests/bitmap/test_bitmap$(EXEEXT) \
+diff --git a/regress/forwarding.sh b/regress/forwarding.sh
+index a1a4b13f..592de7bc 100644
+--- a/regress/forwarding.sh
++++ b/regress/forwarding.sh
+@@ -10,7 +10,8 @@ start_sshd
+ base=33
+ last=$PORT
+ fwd=""
+-CTL=$OBJ/ctl-sock
++make_tmpdir
++CTL=$TMP/ctl-sock
+ 
+ for j in 0 1 2; do
+ 	for i in 0 1 2; do
+diff --git a/regress/mkdtemp.c b/regress/mkdtemp.c
+new file mode 100644
+index 00000000..8c7d2e21
+--- /dev/null
++++ b/regress/mkdtemp.c
+@@ -0,0 +1,59 @@
++/*
++ * Copyright (c) 2017 Colin Watson <cjwatson@debian.org>
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++/* Roughly equivalent to "mktemp -d -t TEMPLATE", but portable. */
++
++#include "includes.h"
++
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "log.h"
++
++static void
++usage(void)
++{
++	fprintf(stderr, "mkdtemp template\n");
++	exit(1);
++}
++
++int
++main(int argc, char **argv)
++{
++	const char *base;
++	const char *tmpdir;
++	char template[PATH_MAX];
++	int r;
++	char *dir;
++
++	if (argc != 2)
++		usage();
++	base = argv[1];
++
++	if ((tmpdir = getenv("TMPDIR")) == NULL)
++		tmpdir = "/tmp";
++	r = snprintf(template, sizeof(template), "%s/%s", tmpdir, base);
++	if (r < 0 || (size_t)r >= sizeof(template))
++		fatal("template string too long");
++	dir = mkdtemp(template);
++	if (dir == NULL) {
++		perror("mkdtemp");
++		exit(1);
++	}
++	puts(dir);
++	return 0;
++}
+diff --git a/regress/multiplex.sh b/regress/multiplex.sh
+index acb9234d..0ac4065e 100644
+--- a/regress/multiplex.sh
++++ b/regress/multiplex.sh
+@@ -1,7 +1,8 @@
+ #	$OpenBSD: multiplex.sh,v 1.27 2014/12/22 06:14:29 djm Exp $
+ #	Placed in the Public Domain.
+ 
+-CTL=/tmp/openssh.regress.ctl-sock.$$
++make_tmpdir
++CTL=$TMP/ctl-sock
+ 
+ tid="connection multiplexing"
+ 
+diff --git a/regress/test-exec.sh b/regress/test-exec.sh
+index bfa48803..13a8e18f 100644
+--- a/regress/test-exec.sh
++++ b/regress/test-exec.sh
+@@ -317,6 +317,14 @@ stop_sshd ()
+ 	fi
+ }
+ 
++TMP=
++
++make_tmpdir ()
++{
++	TMP="$($OBJ/mkdtemp openssh-regress-XXXXXXXXXXXX)" || \
++	    fatal "failed to create temporary directory"
++}
++
+ # helper
+ cleanup ()
+ {
+@@ -327,6 +335,9 @@ cleanup ()
+ 			kill $SSH_PID
+ 		fi
+ 	fi
++	if [ "x$TMP" != "x" ]; then
++		rm -rf "$TMP"
++	fi
+ 	stop_sshd
+ }
+ 

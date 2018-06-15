@@ -1,0 +1,6 @@
+01-fix-paths.patch
+02-rename-binary.patch
+03-runas-user.patch
+10-no-zlib-compression.patch
+12-restore-pidfile-default.patch
+21-author-tests.patch

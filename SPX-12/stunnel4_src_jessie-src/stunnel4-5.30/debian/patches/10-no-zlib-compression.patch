@@ -1,0 +1,21 @@
+Description: Do not look for zlib at all.
+ The Debian OpenSSL package is built without support for zlib
+ compression since version 1.0.1e-5.
+Forwarded: not-needed
+Author: Peter Pentchev <roam@ringlet.net>
+Last-Update: 2015-12-02
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -204,10 +204,9 @@
+ AC_SEARCH_LIBS([yp_get_default_domain], [nsl])
+ AC_SEARCH_LIBS([socket], [socket])
+ AC_SEARCH_LIBS([openpty], [util])
+-# Checks for dynamic loader and zlib needed by OpenSSL
++# Checks for dynamic loader needed by OpenSSL
+ AC_SEARCH_LIBS([dlopen], [dl])
+ AC_SEARCH_LIBS([shl_load], [dld])
+-AC_SEARCH_LIBS([inflateEnd], [z])
+ 
+ # Add BeOS libraries
+ if test "x$host_os" = "xbeos"; then

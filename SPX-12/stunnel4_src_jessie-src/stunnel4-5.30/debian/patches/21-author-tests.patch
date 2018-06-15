@@ -1,0 +1,16 @@
+Description: Only build the Win32 executables if requested.
+Author: Peter Pentchev <roam@ringlet.net>
+Forwarded: not yet
+Last-Update: 2015-11-11
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -8,7 +8,7 @@
+ AC_CONFIG_SRCDIR([src/stunnel.c])
+ AM_INIT_AUTOMAKE
+ 
+-AM_CONDITIONAL([AUTHOR_TESTS], [test -d ".git"])
++AM_CONDITIONAL([AUTHOR_TESTS], [test -n "$AUTHOR_TESTS"])
+ AC_CANONICAL_HOST
+ AC_SUBST([host])
+ AC_DEFINE_UNQUOTED([HOST], ["$host"], [Host description])

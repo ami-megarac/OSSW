@@ -1,0 +1,53 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/pilot4/ddrinit/genimage	1969-12-31 19:00:00.000000000 -0500
++++ mywork/arch/arm/cpu/armv7/pilot4/ddrinit/genimage	2015-02-06 05:06:37.000000000 -0500
+@@ -0,0 +1,50 @@
++#!/usr/bin/perl -w
++use strict;
++my $debug = 0;
++write_skbin($ARGV[1], $ARGV[2]);
++sub write_skbin {
++	my ($objname, $addr) = @_;
++
++	open (P, "<$objname") or die ("Could not open $objname for reading");
++	binmode (P);
++	binmode (STDOUT);
++	my @file = ();
++	my $cnt=0;
++	my $byte;
++	my $crc32 = 0;
++	while (read (P, $byte, 1) == 1) {
++		$cnt++;
++		push @file, $byte;
++	}
++	$cnt += 4; # crc32 adds 4 bytes
++#	if (($cnt & 0x3) != 0) {
++#		warn ("WARNING: Image size $cnt is
++#			not word aligned\n");
++#	}
++
++
++	wr_bin($cnt);        #CRC is
++	print @file;
++	wr_bin ($crc32);
++
++	my $str = sprintf
++	("Count =
++		0x%x, CRC32 =
++		0x%x",$cnt, $crc32) if
++	$debug;
++	warn $str if $debug;
++}
++
++sub wr_bin {
++	my ($word) = @_;
++	my @byte = ();
++	$byte[0] = $word & 0xff;
++	$byte[1] = ($word >> 8) & 0xff;
++	$byte[2] = ($word >> 16) & 0xff;
++	$byte[3] = ($word >> 24) & 0xff;
++	printf ("%c%c%c%c", $byte[0], $byte[1], $byte[2], $byte[3]);
++# printf ("%02x%02x%02x%02x\n", $byte[0], $byte[1], $byte[2], $byte[3]);
++# # warn ("$byte[0], $byte[2], $byte[2], $byte[3]\n");
++
++}
++#

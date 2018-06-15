@@ -1,0 +1,94 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/pilot4/sysctrl.equ	1969-12-31 19:00:00.000000000 -0500
++++ mywork/arch/arm/cpu/armv7/pilot4/sysctrl.equ	2015-02-06 05:06:37.000000000 -0500
+@@ -0,0 +1,91 @@
++/*******************************************************************************
++ *
++ *
++ * Copyright (C) 2004-2014 Emulex. All rights reserved.
++ * EMULEX is a trademark of Emulex.
++ * www.emulex.com
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of version 2 of the GNU General Public License as published by the
++ * Free Software Foundation.
++ * This program is distributed in the hope that it will be useful. ALL EXPRESS
++ * OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED
++ * WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
++ * NON-INFRINGEMENT, ARE DISCLAIMED, EXCEPT TO THE EXTENT THAT SUCH DISCLAIMERS
++ * ARE HELD TO BE LEGALLY INVALID. See the GNU General Public License for more
++ * details, a copy of which can be found in the file COPYING included
++ * with this package.
++ *
++ ********************************************************************************/
++
++REMAPREG	        = (SYSCONTROL + 0x0)
++SCLKSTS 		= (SYSCONTROL + 0x4) 
++SCLKCTL 		= (SYSCONTROL + 0x8) 
++PLLSTS 			= (SYSCONTROL + 0x10) @ do not exist
++DDR_PLLCTL		= (SYSCONTROL + 0x10)
++PLLCTL                  = (SYSCONTROL + 0x14)
++IO_EN_CTRL              = (SYSCONTROL + 0x32)
++SYS_IRQ_STS             = (SYSCONTROL + 0x40)
++FGB_INTR_SWAP_REG 	= (SYSCONTROL)
++F1_GPIOEN 		= (SYSCONTROL + 0x800)
++F2_GPIOEN 		= (SYSCONTROL + 0x808)
++RELOADLPCADDR	        = (SYSCONTROL + 0x100)
++SYS_SIO_CTRL            = (SYSCONTROL + 0x58)
++SYSRCR                  = (SYSCONTROL + 0x700)
++SYSRSTS                 = (SYSCONTROL + 0x704)
++SYSWRER                 = (SYSCONTROL + 0x708)
++SYSSRER                 = (SYSCONTROL + 0x70C)
++SYSBDCR                 = (SYSCONTROL + 0x720)
++SYSBDSR1                = (SYSCONTROL + 0x724)
++SYSBDSR2                = (SYSCONTROL + 0x728)
++SYS_MCSS_CLK_CTRL       = (SYSCONTROL + 0x84)
++@@ syscontrol register offsets
++SYSCTRL_REVID           = 0x50
++PIDBG0                  = 0x54
++RSTCTL                  = 0x5C
++PCISID			= 0x4C
++
++
++@ PLL Control and Status register bits
++SYS_PLLLOCK 		= (1<<14)
++DDR_PLLLOCK 		= (1<<29)
++PLL_STDBY               = (1<<21)
++PLLLOCK                 = (SYS_PLLLOCK + DDR_PLLLOCK)
++stbyint_sts	        = (1<<2)	
++stbyint_en	        = (1<<3)
++
++@@ IRQ Swap register
++ARMF2I                  = (1<<8)
++SSPF2I                  = (1<<9)
++ARMI2F                  = (1<<10)
++SSPI2F                  = (1<<11)
++
++@ GPIO EN registers for Muxed pins
++GPIO16_EN 		=  (F1_GPIOEN + 0x0)
++GPIO17_EN 		=  (F1_GPIOEN + 0x1)
++GPIO18_EN 		=  (F1_GPIOEN + 0x2)
++GPIO19_EN 		=  (F1_GPIOEN + 0x3)
++GPIO20_EN 		=  (F1_GPIOEN + 0x4)
++
++GPIO21_EN 		=  (F2_GPIOEN + 0x0)
++GPIO22_EN 		=  (F2_GPIOEN + 0x1)
++GPIO23_EN 		=  (F2_GPIOEN + 0x2)
++GPIO24_EN 		=  (F2_GPIOEN + 0x3)
++GPIO25_EN 		=  (F2_GPIOEN + 0x4)
++GPIO26_EN 		=  (F2_GPIOEN + 0x5)
++GPIO27_EN 		=  (F2_GPIOEN + 0x6)
++GPIO28_EN 		=  (F2_GPIOEN + 0x7)
++GPIO29_EN 		=  (F2_GPIOEN + 0x8)
++GPIO30_EN 		=  (F2_GPIOEN + 0x9)
++
++PINMUXCTRL		=  (SYSCONTROL + 0x804)
++MAC_RGMII_CTRL  	=  0x40100188
++
++@@ Sys SIO CONTROL bit defines
++spi_host_wr_disable_bit =  (1<<24)
++spi_host_rd_disable_bit =  (1<<25)
++
++ARM_SFT_RST_FUNCTION_INSPI = 0x4c
++
++@ Reset module 
++soft_reset_sts		=  (1<<1)

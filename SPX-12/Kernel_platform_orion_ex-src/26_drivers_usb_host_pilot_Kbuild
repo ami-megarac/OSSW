@@ -1,0 +1,8 @@
+--- linux/drivers/usb/host/pilot/Kbuild	1970-01-01 08:00:00.000000000 +0800
++++ linux.new/drivers/usb/host/pilot/Kbuild	2016-12-19 16:02:20.127414544 +0800
+@@ -0,0 +1,5 @@
++obj-$(CONFIG_USB_PILOT4_HCD) += pilot4_usb_host_mod.o
++pilot4_usb_host_mod-y := \
++	pilot4_usb_hc.o	\
++	pilot4_usb_host.o \
++	pilot4_virthub.o

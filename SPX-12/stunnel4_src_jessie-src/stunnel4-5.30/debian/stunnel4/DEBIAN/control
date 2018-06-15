@@ -1,0 +1,26 @@
+Package: stunnel4
+Version: 3:5.30-1~bpo8+1
+Architecture: armel
+Maintainer: Peter Pentchev <roam@ringlet.net>
+Installed-Size: 485
+Pre-Depends: adduser
+Depends: libc6 (>= 2.11), libssl1.0.0 (>= 1.0.2~beta3), perl, openssl, netbase
+Suggests: logcheck-database
+Breaks: stunnel (<< 3:4.20-3)
+Replaces: stunnel
+Provides: stunnel
+Section: net
+Priority: optional
+Homepage: http://www.stunnel.org/
+Description: Universal SSL tunnel for network daemons
+ The stunnel program is designed to work  as  SSL  encryption
+ wrapper between remote client and local (inetd-startable) or
+ remote server. The concept is that having non-SSL aware daemons
+ running  on  your  system you can easily setup them to
+ communicate with clients over secure SSL channel.
+ .
+ stunnel can be used to add  SSL  functionality  to  commonly
+ used  inetd  daemons  like  POP-2,  POP-3  and  IMAP servers
+ without any changes in the programs' code.
+ .
+ This package contains a wrapper script for compatibility with stunnel 3.x

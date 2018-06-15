@@ -1,0 +1,117 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/pilot4/ddr_cfg.equ	1969-12-31 19:00:00.000000000 -0500
++++ mywork/arch/arm/cpu/armv7/pilot4/ddr_cfg.equ	2015-02-06 05:06:37.000000000 -0500
+@@ -0,0 +1,114 @@
++/*******************************************************************************
++ *
++ *
++ * Copyright (C) 2004-2014 Emulex. All rights reserved.
++ * EMULEX is a trademark of Emulex.
++ * www.emulex.com
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of version 2 of the GNU General Public License as published by the
++ * Free Software Foundation.
++ * This program is distributed in the hope that it will be useful. ALL EXPRESS
++ * OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED
++ * WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
++ * NON-INFRINGEMENT, ARE DISCLAIMED, EXCEPT TO THE EXTENT THAT SUCH DISCLAIMERS
++ * ARE HELD TO BE LEGALLY INVALID. See the GNU General Public License for more
++ * details, a copy of which can be found in the file COPYING included
++ * with this package.
++ *
++ ********************************************************************************/
++
++DDR_CFG = 1
++.ifdef CFG2
++DDR_CFG = 2
++.endif
++.ifdef CFG3
++DDR_CFG = 3
++.endif
++.ifdef CFG4
++DDR_CFG = 4
++.endif
++.ifdef CFG5
++DDR_CFG = 5
++.endif
++.ifdef CFG6
++DDR_CFG = 6
++.endif
++.ifdef CFG7
++DDR_CFG = 7
++.endif
++.ifdef CFG8
++DDR_CFG = 8
++.endif
++.ifdef CFG9
++DDR_CFG = 9
++.endif
++.ifdef CFG10
++DDR_CFG = 10
++.endif
++.ifdef CFG11
++DDR_CFG = 11
++.endif
++.ifdef CFG12
++DDR_CFG = 12
++.endif
++.ifdef CFG13
++DDR_CFG = 13
++.endif
++.ifdef CFG14
++DDR_CFG = 14
++.endif
++.ifdef CFG15
++DDR_CFG = 15
++.endif
++.ifdef CFG16
++DDR_CFG = 16
++.endif
++.ifdef CFG17
++DDR_CFG = 17
++.endif
++.ifdef CFG18
++DDR_CFG = 18
++.endif
++.ifdef CFG19
++DDR_CFG = 19
++.endif
++.ifdef CFG20
++DDR_CFG = 20
++.endif
++.ifdef CFG21
++DDR_CFG = 21
++.endif
++.ifdef CFG22
++DDR_CFG = 22
++.endif
++.ifdef CFG23
++DDR_CFG = 23
++.endif
++.ifdef CFG24
++DDR_CFG = 24
++.endif
++.ifdef CFG25
++DDR_CFG = 25
++.endif
++.ifdef CFG26
++DDR_CFG = 26
++.endif
++.ifdef CFG27
++DDR_CFG = 27
++.endif
++.ifdef CFG28
++DDR_CFG = 28
++.endif
++.ifdef CFG29
++DDR_CFG = 29
++.endif
++.ifdef CFG30
++DDR_CFG = 30
++.endif
++.ifdef CFG31
++DDR_CFG = 31
++.endif
++.ifdef CFG32
++DDR_CFG = 32
++.endif

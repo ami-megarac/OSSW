@@ -1,0 +1,194 @@
+--- u-boot-2013.07/arch/arm/cpu/armv7/pilot4/ddrinit/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ mywork/arch/arm/cpu/armv7/pilot4/ddrinit/Makefile	2015-03-23 10:32:48.358744033 -0400
+@@ -0,0 +1,191 @@
++S_OBJS    = $(patsubst %.s,%.o,$(wildcard *.s))
++C_OBJS    = $(patsubst %.c,%.o,$(wildcard *.c))
++build_obj = $(C_OBJS) $(S_OBJS)
++#CROSS_COMPILE = /nfs/links/rtools/eda/arm/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/
++#CC        = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-gcc
++#AS        = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-as
++#LD        = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-ld
++#AR        = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-ar
++#LIST      = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-objdump
++#OBJCOPY   = $(CROSSTOOL_GCC_DIR)/$(CROSS_COMPILE)-objcopy
++CC        = $(CROSS_COMPILE)gcc
++AS        = $(CROSS_COMPILE)as
++LD        = $(CROSS_COMPILE)ld
++AR        = $(CROSS_COMPILE)ar
++LIST      = $(CROSS_COMPILE)objdump
++OBJCOPY   = $(CROSS_COMPILE)objcopy
++ARM_IS    = armv7-a
++INCLUDE = ../include/
++#CFLAGS += -mthumb -DFPGA_DUT
++CFLAGS += -mthumb
++ASFLAGS += -mfpu=softfpa
++DDR_FREQ       = 0
++DDR3           = 1
++ENV         = HW
++
++ifeq ($(DUT), FPGA)
++ASFLAGS+= --defsym FPGA_DUT=1
++CFLAGS   += -DFPGA_DUT
++dut = f
++else
++#ASFLAGS+= --defsym ASIC_DUT=1 --defsym U4BOOT_ALSO=1
++ASFLAGS+= --defsym ASIC_DUT=1 
++CFLAGS   += -DASIC_DUT
++dut = a
++endif
++
++ifeq ($(ENV), HW)
++env = h
++ASFLAGS += --defsym HW_ENV=1
++CFLAGS += -DHW_ENV
++else
++env = s
++endif
++
++#disable warning as error
++CFLAGS += -Wno-error
++
++ELF = ddr_options
++LDOPT     = -T ddrinit.ld -Map ddrinit.map
++gcclibdir := $(shell dirname `$(CC) -print-libgcc-file-name`)
++#GCCLIB=$(CROSSTOOL_LIBS_PATH)/gcc/arm-none-linux-gnueabi/4.6.1/
++#GCCLIB=/elx/sandbox/pilot_fw/akshay/cockpit_p4/toolchain/x-tool/lib/gcc/arm-emulex-linux-gnueabi/4.7.2/
++LDLIB=--library-path=$(gcclibdir) --library=gcc
++CCOPT = -I $(INCLUDE) -g  -Os -fno-common -ffixed-r8 -msoft-float  -gdwarf-2 -D__KERNEL__ -fno-builtin -ffreestanding -nostdinc -isystem -pipe  -DCONFIG_ARM -D__ARM__ -marm  -mabi=aapcs-linux -mno-thumb-interwork -march=$(ARM_IS) -Wall -Wstrict-prototypes -fno-stack-protector $(CFLAGS)
++
++
++ifeq ($(DDR3), 1)
++        CFLAGS+=-DDDR3
++else
++        CFLAGS+=-DDDR4
++        ASFLAGS+=--defsym DDR4=1
++endif
++
++ifeq ($(DDR_FREQ), 0)
++        ifeq ($(DUT), FPGA)
++                CFLAGS+=-DDDR3_350_400MHZ
++                ASFLAGS+=--defsym DDR3_350_400MHZ=1
++                ifeq ($(DDR3), 1)
++                        CFLAGS+=-DWL6RL6
++                else
++                        CFLAGS+=-DWL9RL10
++                endif
++                CFLAGS+=-DDLL_OFF
++        else
++                ASFLAGS+=--defsym DDR3_1600MHZ=1
++                CFLAGS+=-DDDR3_1600MHZ
++                ifeq ($(DDR3), 1)
++                        CFLAGS+=-DWL8RL11
++                else
++                        CFLAGS+=-DWL11RL12
++                endif
++        endif
++endif
++
++ifeq ($(DDR_FREQ), DDR3_75_125MHZ)
++        CFLAGS+=-DDDR3_75_125MHZ
++        ASFLAGS+=--defsym DDR3_75_125MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL6RL6
++        else
++                CFLAGS+=-DWL9RL10
++        endif
++        CFLAGS+=-DDLL_OFF
++endif
++
++ifeq ($(DDR_FREQ), DDR3_200_250MHZ)
++        CFLAGS+=-DDDR3_200_250MHZ
++        ASFLAGS+=--defsym DDR3_200_250MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL6RL6
++        else
++                CFLAGS+=-DWL9RL10
++        endif
++        CFLAGS+=-DDLL_OFF
++endif
++
++ifeq ($(DDR_FREQ), DDR3_350_400MHZ)
++        CFLAGS+=-DDDR3_350_400MHZ
++        ASFLAGS+=--defsym DDR3_350_400MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL6RL6
++        else
++                CFLAGS+=-DWL9RL10
++        endif
++        CFLAGS+=-DDLL_OFF
++endif
++
++ifeq ($(DDR_FREQ), DDR3_500MHZ)
++        CFLAGS+=-DDDR3_500MHZ
++        ASFLAGS+=--defsym DDR3_500MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL6RL6
++        else
++                CFLAGS+=-DWL9RL10
++        endif
++        CFLAGS+=-DDLL_OFF
++endif
++
++ifeq ($(DDR_FREQ), DDR3_800MHZ)
++        CFLAGS+=-DDDR3_800MHZ
++        ASFLAGS+=--defsym DDR3_800MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL5RL6
++        else
++                CFLAGS+=-DDLL_OFF
++                CFLAGS+=-DWL9RL10
++        endif
++endif
++
++ifeq ($(DDR_FREQ), DDR3_1066MHZ)
++        CFLAGS+=-DDDR3_1066MHZ
++        ASFLAGS+=--defsym DDR3_1066MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL6RL7
++        else
++                CFLAGS+=-DDLL_OFF
++                CFLAGS+=-DWL9RL10
++        endif
++endif
++
++ifeq ($(DDR_FREQ), DDR3_1333MHZ)
++        CFLAGS+=-DDDR3_1333MHZ
++        ASFLAGS+=--defsym DDR3_1333MHZ=1
++        ifeq ($(DDR3), 1)
++                CFLAGS+=-DWL7RL9
++        else
++                CFLAGS+=-DWL9RL10
++        endif
++endif
++
++
++ASOPT     = -I $(INCLUDE) -march=$(ARM_IS) $(ASFLAGS) 
++
++export  ASFLAGS CFLAGS 
++
++all:clean message $(ELF) $(ELF).bin $(ELF).D
++
++message:
++	echo "Building $(ELF) image"
++	echo $(build_obj)
++
++%.o: %.c
++	$(CC) $(CCOPT) -c $< -o $@
++
++%.o: %.s
++	$(AS) $(ASOPT) $< -o $@
++	
++$(ELF): $(build_obj)
++	$(LD) $(LDOPT) $(build_obj) -o $@ $(LDLIB)
++
++$(ELF).bin: $(ELF)
++	$(OBJCOPY) --gap-fill=0xff -O binary $< $@
++	mv $(ELF).bin ddrinit.bin
++	perl genimage ddrinit.bin ddrinit.bin > ddrinit.lod
++
++$(ELF).D: $(ELF)
++	$(LIST) -D $< > $@
++
++clean:
++	rm -f *.o $(ELF) $(ELF).bin $(ELF).D $(ELF).map *.bin *.map *.lod
++

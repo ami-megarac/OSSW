@@ -1,0 +1,13 @@
+--- linux/arch/arm/mach-astevb/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ linux.new/arch/arm/mach-astevb/Makefile	2017-05-05 21:58:33.705536095 +0000
+@@ -0,0 +1,10 @@
++#
++# Makefile for the linux kernel.
++#
++
++# Object file lists.
++
++obj-y					:= setup.o irq.o time.o
++obj-$(CONFIG_SOC_AST3100)		+= usbhost.o
++obj-$(CONFIG_SOC_AST3200)		+= usbhost.o
++obj-$(CONFIG_PCIE_AST)                  += ast_p2x.o

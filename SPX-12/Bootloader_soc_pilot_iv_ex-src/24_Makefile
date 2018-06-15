@@ -1,0 +1,31 @@
+--- u-boot-2013.07/Makefile	2015-03-24 09:09:24.492794033 -0400
++++ mywork/Makefile	2015-04-22 09:45:56.578273864 -0400
+@@ -365,6 +365,10 @@
+ LIBS-y += $(CPUDIR)/tegra-common/libtegra-common.o
+ endif
+ 
++ifeq ($(SOC),pilot4)
++LIBS-y += arch/$(ARCH)/cpu/pilotcommon/libpilotcommon.o
++endif
++
+ LIBS := $(addprefix $(obj),$(sort $(LIBS-y)))
+ .PHONY : $(LIBS)
+ 
+@@ -452,7 +456,7 @@
+ $(obj)u-boot.bin:	$(obj)u-boot
+ 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
+ 		$(BOARD_SIZE_CHECK)
+-
++		
+ $(obj)u-boot.ldr:	$(obj)u-boot
+ 		$(CREATE_LDR_ENV)
+ 		$(LDR) -T $(CONFIG_BFIN_CPU) -c $@ $< $(LDR_FLAGS)
+@@ -619,7 +623,7 @@
+ 		$(MAKE) -C $(dir $@) $(notdir $@)
+ 
+ $(obj)u-boot.lds: $(LDSCRIPT)
+-		$(CPP) $(CPPFLAGS) $(LDPPFLAGS) -ansi -D__ASSEMBLY__ -P - <$< >$@
++		$(CPP) $(CPPFLAGS) $(LDPPFLAGS) -D__ASSEMBLY__ -P - <$< >$@
+ 
+ nand_spl:	$(TIMESTAMP_FILE) $(VERSION_FILE) depend
+ 		$(MAKE) -C nand_spl/board/$(BOARDDIR) all
