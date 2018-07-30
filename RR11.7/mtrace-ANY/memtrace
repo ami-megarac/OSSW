@@ -1,0 +1,65 @@
+#!/bin/sh
+#Created by Rajesh S (rajesh@amiindia.co.in)
+## /usr/leak - Generate memory leak report
+##
+
+CURRRENT_TIME=`date`
+ACTION=$1
+
+if [ $# -ne 1 ]
+then
+	echo "Usage: /usr/bin/memtrace {qomd|smashclpd}"
+	exit 1
+fi
+
+
+#Register the Process Name
+case "$ACTION" in
+  qomd)
+	NAME="qomd"
+	REMOVE_FILE="/var/run/qomd.pid"
+	PROCESS_NAME="/usr/local/bin/qomd -d"
+	BINARY_PATH="/usr/local/bin/qomd"
+	;;
+  smashclpd)
+	NAME="smashclpd"
+	REMOVE_FILE="/tmp/smash*"
+	PROCESS_NAME="/usr/local/bin/smashclpd"
+	BINARY_PATH="/usr/local/bin/smashclpd"
+	;;
+
+  *)
+	echo "Usage: /usr/bin/memtrace {qomd|smashclpd}"
+	exit 1
+esac
+
+
+RAW_TRACE_FILE="/home/"$ACTION"_mtrace_report.log"
+TRACE_REPORT="/home/"$ACTION"_MemoryTrace_Report_"$CURRRENT_TIME".log"
+LEAK_REPORT="/home/"$ACTION"_MemoryLeak_Report_"$CURRRENT_TIME".log"
+
+if [ ! -f $RAW_TRACE_FILE ] 
+then
+	echo "$RAW_TRACE_FILE : No such file"
+	exit 1
+fi
+
+echo "Please wait..."
+killall -1 $NAME 2>/dev/null
+rm -rf $REMOVE_FILE 2>/dev/null
+mtrace $BINARY_PATH  $RAW_TRACE_FILE > $LEAK_REPORT 2>/dev/null
+
+mv "$RAW_TRACE_FILE" "$TRACE_REPORT"
+
+echo "--------------------------------------------------------------------------------------"
+echo "$ACTION Memory TRACE file : $TRACE_REPORT"
+echo "$ACTION Memory leak Report : $LEAK_REPORT"
+echo "--------------------------------------------------------------------------------------"
+
+touch "$RAW_TRACE_FILE"
+export MALLOC_TRACE="$RAW_TRACE_FILE"
+$PROCESS_NAME
+
+
+
+exit 0

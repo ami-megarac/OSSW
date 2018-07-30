@@ -1,0 +1,44 @@
+--- olddata/timeoutd.c	2016-07-12 14:19:47.166772176 +0530
++++ data/timeoutd.c	2016-07-16 15:38:02.026513690 +0530
+@@ -392,7 +392,12 @@
+     closelog();
+ #endif
+     /* Go to end of file minus one structure */
+-    fseek(fp, -1L * sizeof(struct utmp), SEEK_END);
++    if ( 0 != fseek(fp, -1L * sizeof(struct utmp), SEEK_END))
++    {
++        printf("fseek: Unable to reachour EOF\n");
++        fclose(fp);
++        return;
++    }
+ 
+     while (fread(&ut, sizeof(struct utmp), 1, fp) == 1)
+     {
+@@ -723,6 +728,7 @@
+     if(strlen(t) > strlen(in_set)) /* Avoid Buffer overflow */
+     {
+         printf("timeoutd.c:Line no-717: Buffer overflow\n");
++        free(set);
+         return 0;
+     }
+     while (t)
+@@ -1132,7 +1138,8 @@
+     if (msgfile)
+     {
+     	while ((cnt = read(tty, msgbuf, 1024)) > 0)
+-    	    write(tty, msgbuf, cnt);
++    	    if(write(tty, msgbuf, cnt) < 0)
++                printf("write failed in tty\n");
+     	fclose(msgfile);
+     }
+     else
+@@ -1141,7 +1148,8 @@
+             snprintf(msgbuf,sizeof(msgbuf), "\r\n\r\nLogins not allowed at this time.  Please try again later.\r\n");
+         else
+             snprintf(msgbuf,sizeof(msgbuf), "\r\n\r\nYou have exceeded your %s time limit.  Logging you off now.\r\n\r\n", limit_names[(int)limit_type]);
+-        write(tty, msgbuf, strlen(msgbuf));
++        if(write(tty, msgbuf, strlen(msgbuf)) < 0)
++            printf("write failed in tty\n");
+     }
+ }
+ 

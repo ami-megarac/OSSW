@@ -1,0 +1,16 @@
+#!/bin/sh
+#Created by Rajesh S (rajesh@amiindia.co.in)
+##
+
+#To check whether MEMORY TRACE QOM is enable or disable
+if [ ! -z $CONFIG_SPX_FEATURE_MEMORY_TRACE_QOM ]; then
+	echo "CONFIG_SPX_FEATURE_MEMORY_TRACE_QOM" > ./memtrace_support
+	exit 0
+fi
+
+
+#To check whether MEMORY TRACE SMASH is enable or disable
+if [ ! -z $CONFIG_SPX_FEATURE_MEMORY_TRACE_SMASH ]; then
+	echo "CONFIG_SPX_FEATURE_MEMORY_TRACE_SMASH" > ./memtrace_support
+	exit 0
+fi
