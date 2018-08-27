@@ -1,0 +1,103 @@
+Description: Change references to the binary from stunnel to stunnel4
+Forwarded: not-needed
+Author: Julien Lemoine <speedblue@debian.org>
+Author: Luis Rodrigo Gallardo Cruz <rodrigo@debian.org>
+Last-Update: 2016-01-31
+
+--- a/src/stunnel3.in
++++ b/src/stunnel3.in
+@@ -22,7 +22,7 @@
+ use Getopt::Std;
+ 
+ # Configuration - path to stunnel (version >=4.05)
+-$stunnel_bin='@bindir@/stunnel';
++$stunnel_bin='@bindir@/stunnel4';
+ 
+ # stunnel3 script body begins here
+ ($read_fd, $write_fd)=POSIX::pipe();
+--- a/tools/stunnel.init.in
++++ b/tools/stunnel.init.in
+@@ -1,6 +1,6 @@
+ #! /bin/sh -e
+ ### BEGIN INIT INFO
+-# Provides:          stunnel
++# Provides:          stunnel4
+ # Required-Start:    $local_fs $remote_fs
+ # Required-Stop:     $local_fs $remote_fs
+ # Should-Start:      $syslog
+@@ -21,8 +21,8 @@
+ 
+ . /lib/lsb/init-functions
+ 
+-DEFAULTPIDFILE="/var/run/stunnel.pid"
+-DAEMON=@bindir@/stunnel
++DEFAULTPIDFILE="/var/run/stunnel4.pid"
++DAEMON=@bindir@/stunnel4
+ NAME=stunnel
+ DESC="SSL tunnels"
+ OPTIONS=""
+@@ -49,9 +49,9 @@
+ startdaemons() {
+   local res file args pidfile warn status
+ 
+-  if ! [ -d /var/run/stunnel ]; then
+-    rm -rf /var/run/stunnel
+-    install -d -o stunnel -g stunnel /var/run/stunnel
++  if ! [ -d /var/run/stunnel4 ]; then
++    rm -rf /var/run/stunnel4
++    install -d -o stunnel4 -g stunnel4 /var/run/stunnel4
+   fi
+   if [ -n "$RLIMITS" ]; then
+     ulimit $RLIMITS
+@@ -141,9 +141,9 @@
+   OPTIONS="-- $OPTIONS"
+ fi
+ 
+-[ -f @sysconfdir@/default/stunnel ] && . @sysconfdir@/default/stunnel
++[ -f @sysconfdir@/default/stunnel4 ] && . @sysconfdir@/default/stunnel4
+ if [ "$ENABLED" = "0" ] ; then
+-  echo "$DESC disabled, see @sysconfdir@/default/stunnel"
++  echo "$DESC disabled, see @sysconfdir@/default/stunnel4"
+   exit 0
+ fi
+ 
+--- a/tools/script.sh
++++ b/tools/script.sh
+@@ -2,7 +2,7 @@
+ 
+ REMOTE_HOST="www.mirt.net:443"
+ echo "client script connecting $REMOTE_HOST"
+-/usr/local/bin/stunnel -fd 10 \
++/usr/bin/stunnel4 -fd 10 \
+     11<&0 <<EOT 10<&0 0<&11 11<&-
+ client=yes
+ connect=$REMOTE_HOST
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -15,11 +15,11 @@
+ 
+ .pod.in.8.in:
+ 	pod2man -u -n stunnel -s 8 -r $(VERSION) \
+-		-c "stunnel TLS Proxy" -d `date +%Y.%m.%d` $< $@
++		-c "stunnel4 TLS Proxy" -d `date +%Y.%m.%d` $< $@
+ 
+ .pod.in.html.in:
+ 	pod2html --index --backlink --header \
+-		--title "stunnel TLS Proxy" --infile=$< --outfile=$@
++		--title "stunnel4 TLS Proxy" --infile=$< --outfile=$@
+ 	rm -f pod2htmd.tmp pod2htmi.tmp
+ 
+ edit = sed \
+--- a/doc/stunnel.pl.8.in
++++ b/doc/stunnel.pl.8.in
+@@ -70,8 +70,8 @@
+ .rr rF
+ .\" ========================================================================
+ .\"
+-.IX Title "stunnel 8"
+-.TH stunnel 8 "2015.12.05" "5.28" "stunnel TLS Proxy"
++.IX Title "stunnel4 8"
++.TH stunnel 8 "2015.12.05" "5.28" "stunnel4 TLS Proxy"
+ .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
+ .\" way too many mistakes in technical documents.
+ .if n .ad l

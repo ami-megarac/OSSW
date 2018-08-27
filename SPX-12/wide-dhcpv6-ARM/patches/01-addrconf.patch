@@ -1,0 +1,10 @@
+--- wide-dhcpv6-20080615/addrconf.c	2008-06-15 13:18:40.000000000 +0530
++++ wide-dhcpv6-20080615_mod/addrconf.c	2010-03-30 21:40:12.000000000 +0530
+@@ -394,6 +394,6 @@
+ #endif
+ 	sin6.sin6_addr = addr->addr;
+ 
+-	return (ifaddrconf(cmd, sa->dhcpif->ifname, &sin6, 128,
++	return (ifaddrconf(cmd, sa->dhcpif->ifname, &sin6, 64,
+ 	    addr->pltime, addr->vltime));
+ }

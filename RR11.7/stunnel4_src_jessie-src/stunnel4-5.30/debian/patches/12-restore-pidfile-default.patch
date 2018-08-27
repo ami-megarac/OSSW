@@ -1,0 +1,45 @@
+Description: Temporarily restore the pid file creation by default.
+ The init script will not be able to monitor the automatically-started
+ instances of stunnel if there is no pid file.  For the present for the
+ upgrade from 4.53 the "create the pid file by default" behavior is
+ restored and the init script warns about configuration files that have
+ no "pid" setting.  The intention is that in a future version the init
+ script will refuse to start stunnel for these configurations.
+Forwarded: not-needed
+Author: Peter Pentchev <roam@ringlet.net>
+Bug-Debian: http://bugs.debian.org/744851
+Last-Update: 2015-12-02
+
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -44,6 +44,7 @@
+ stunnel_CPPFLAGS += -I$(SSLDIR)/include
+ stunnel_CPPFLAGS += -DLIBDIR='"$(pkglibdir)"'
+ stunnel_CPPFLAGS += -DCONFDIR='"$(sysconfdir)/stunnel"'
++stunnel_CPPFLAGS += -DPIDFILE='"$(localstatedir)/run/stunnel4.pid"'
+ 
+ # SSL library
+ stunnel_LDFLAGS = -L$(SSLDIR)/lib64 -L$(SSLDIR)/lib -lssl -lcrypto
+--- a/src/options.c
++++ b/src/options.c
+@@ -928,7 +928,7 @@
+ #ifndef USE_WIN32
+     switch(cmd) {
+     case CMD_BEGIN:
+-        new_global_options.pidfile=NULL; /* do not create a pid file */
++        new_global_options.pidfile=PIDFILE;
+         break;
+     case CMD_EXEC:
+         if(strcasecmp(opt, "pid"))
+@@ -943,9 +943,10 @@
+     case CMD_FREE:
+         break;
+     case CMD_DEFAULT:
++        s_log(LOG_NOTICE, "%-22s = %s", "pid", PIDFILE);
+         break;
+     case CMD_HELP:
+-        s_log(LOG_NOTICE, "%-22s = pid file", "pid");
++        s_log(LOG_NOTICE, "%-22s = pid file (empty to disable creating)", "pid");
+         break;
+     }
+ #endif

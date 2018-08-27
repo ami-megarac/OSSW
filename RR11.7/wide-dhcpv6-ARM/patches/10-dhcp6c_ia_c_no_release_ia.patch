@@ -1,0 +1,12 @@
+--- wide-dhcpv6-20080615.old/dhcp6c_ia.c	2012-01-06 14:06:45.626560130 +0800
++++ wide-dhcpv6-20080615/dhcp6c_ia.c	2012-01-06 13:30:14.583297000 +0800
+@@ -420,7 +420,8 @@
+ 		for (ia = TAILQ_FIRST(&iac->iadata); ia; ia = ia_next) {
+ 			ia_next = TAILQ_NEXT(ia, link);
+ 
+-			(void)release_ia(ia);
++			//Do not send release packet to server
++			//(void)release_ia(ia);
+ 
+ 			/*
+ 			 * The client MUST stop using all of the addresses

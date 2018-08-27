@@ -1,0 +1,17 @@
+--- wide-dhcpv6-20080615/dhcp6.h	2007-03-21 15:22:53.000000000 +0530
++++ wide-dhcpv6-20080615_mod/dhcp6.h	2010-03-30 21:40:12.000000000 +0530
+@@ -326,6 +326,14 @@
+ 	/* link-layer address follows */
+ } __attribute__ ((__packed__));
+ 
++/* DUID type 3 */
++struct dhcp6opt_duid_type3 {
++        u_int16_t dh6_duid1_type;
++        u_int16_t dh6_duid1_hwtype;
++        /* link-layer address follows */
++} __attribute__ ((__packed__));
++
++
+ /* Status Code */
+ struct dhcp6opt_stcode {
+ 	u_int16_t dh6_stcode_type;

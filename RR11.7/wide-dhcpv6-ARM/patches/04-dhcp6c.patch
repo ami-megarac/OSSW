@@ -1,0 +1,13 @@
+--- wide-dhcpv6-20080615/dhcp6c.c	2008-06-15 13:18:41.000000000 +0530
++++ wide-dhcpv6-20080615_mod/dhcp6c.c	2010-03-30 21:40:12.000000000 +0530
+@@ -93,7 +93,9 @@
+ char *ctladdr = DEFAULT_CLIENT_CONTROL_ADDR;
+ char *ctlport = DEFAULT_CLIENT_CONTROL_PORT;
+ 
+-#define DEFAULT_KEYFILE SYSCONFDIR "/dhcp6cctlkey"
++//#define DEFAULT_KEYFILE SYSCONFDIR "/dhcp6cctlkey"
++#define DEFAULT_KEYFILE "/conf/dhcp6cctlkey"
++
+ #define CTLSKEW 300
+ 
+ static char *conffile = DHCP6C_CONF;

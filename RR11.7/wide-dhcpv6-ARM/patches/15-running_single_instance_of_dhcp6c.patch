@@ -1,0 +1,26 @@
+--- wide-dhcpv6-20080615/dhcp6c.c	2017-12-13 16:38:56.009579734 +0530
++++ wide-dhcpv6-20080615_modified/dhcp6c.c	2017-12-20 15:50:53.270353728 +0530
+@@ -395,9 +395,22 @@
+ }
+ static void sigusr2(int i)
+ {
++	FILE *interface_fp;
++	char interface_name[64];
++	struct dhcp6_if *ifp;
++
+             ddprintf(LOG_DEBUG, FNAME, "Releasing...");
++	interface_fp = fopen("/tmp/interface_name","r");
++	if(interface_fp != NULL)
++	{
++        	fgets(interface_name,64,interface_fp);
++	        fclose(interface_fp);
++	}
++	if((ifp = find_ifconfbyname(interface_name)) != NULL)
++	{
+             exit_ok = 0;
+-            free_resources(NULL);
++            free_resources(ifp);
++	}
+ }
+ 
+ /*------------------------------------------------------------*/

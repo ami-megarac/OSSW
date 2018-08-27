@@ -1,0 +1,4 @@
+perl:Depends=perl
+misc:Pre-Depends=multiarch-support
+shlibs:Depends=libc6 (>= 2.11), libssl1.0.0 (>= 1.0.2~beta3)
+misc:Depends=

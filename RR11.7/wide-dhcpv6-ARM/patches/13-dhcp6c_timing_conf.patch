@@ -1,0 +1,199 @@
+diff -Naur wide-dhcpv6-20080615/common.h wide-dhcpv6-20080615_patch/common.h
+--- wide-dhcpv6-20080615/common.h	2014-08-18 20:39:07.824843207 +0530
++++ wide-dhcpv6-20080615_patch/common.h	2014-08-18 20:37:45.700840579 +0530
+@@ -123,6 +123,8 @@
+ 
+ /* search option for dhcp6_find_listval() */
+ #define MATCHLIST_PREFIXLEN 0x1
++unsigned int TimingParam[22];
++
+ 
+ /* common.c */
+ typedef enum { IFADDRCONF_ADD, IFADDRCONF_REMOVE } ifaddrconf_cmd_t;
+diff -Naur wide-dhcpv6-20080615/dhcp6c.c wide-dhcpv6-20080615_patch/dhcp6c.c
+--- wide-dhcpv6-20080615/dhcp6c.c	2014-08-18 20:39:07.848843208 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6c.c	2014-08-18 20:37:45.700840579 +0530
+@@ -154,7 +154,10 @@
+ 
+ extern int client6_script __P((char *, int, struct dhcp6_optinfo *));
+ 
++static void init_dhcp6c_timing_conf();
++
+ #define MAX_ELAPSED_TIME 0xffff
++#define MAX_SUPPORTED_TIMING_PARAM 22
+ 
+ int
+ main(argc, argv)
+@@ -264,6 +267,8 @@
+ 	    fflush(stderr);
+ 	    abort(); 
+ 	}
++	
++	init_dhcp6c_timing_conf();
+ 
+ 	client6_startall(0);
+ 	client6_mainloop();
+@@ -278,6 +283,86 @@
+ 	    "[-p pid-file] interface [interfaces...]\n");
+ }
+ 
++/*	Initailize the DHCPv6 Timing Parameters
++	Refer RFC:3315 Transmission and Retransmission Parameters
++*/
++static void init_dhcp6c_timing_conf()
++{
++    char *ifname = dhcp6_if->ifname;
++    char oneline[30]={0};
++    int offset=0;
++    int value=0;
++    char Parameter[16]={0};
++    FILE *fp_ipv6timingconf=NULL;
++    
++    int DHCPv6_Timing_Param[MAX_SUPPORTED_TIMING_PARAM]=
++    {
++    /*----Default Values----*/
++           2000,
++           1000,
++           120000,
++           1000,
++           30000,
++           10,
++           1000,
++           1000,
++           4000,
++           10000,
++           10000,
++           600000,
++           10000,
++           600000,
++           1000,
++           1000,
++           120000,
++           1000,
++           5,
++           1000,
++           5,
++           32
++    };
++
++
++    fp_ipv6timingconf=fopen(DHCP6C_TIMING_CONF,"r");
++
++    /*Update the default values if it fails toopen DHCP6C_TIMING_CONF */
++    if(fp_ipv6timingconf == NULL)
++    {
++        printf("ERROR: Cannot open DHCP6C Timing configuration file!\n");
++
++        for(offset=0; offset < MAX_SUPPORTED_TIMING_PARAM; offset++)
++        {
++            TimingParam[offset] = DHCPv6_Timing_Param[offset];
++        }
++
++        return ;
++    }
++
++    /*From DHCP6C_TIMING_CONF file get the Timing parameters corresponding to the requested interface*/
++    while(!feof(fp_ipv6timingconf))
++    {
++        memset(oneline,0,sizeof(oneline));
++        if (fgets(oneline,29,fp_ipv6timingconf) == NULL)
++            break;
++        else
++        {
++            if(strstr (oneline,ifname) != NULL)
++                break;
++        }
++    }
++
++    for(offset=0; offset < MAX_SUPPORTED_TIMING_PARAM; offset++)
++    {
++        if(fscanf(fp_ipv6timingconf, "%s %d", Parameter,&value) == EOF)
++            break;
++
++        TimingParam[offset] = value;
++    }
++
++    return;
++
++}
++
+ static int InstallSignal(int SigNum,void (*sighandler)(int sig))
+ {
+     struct sigaction action;
+diff -Naur wide-dhcpv6-20080615/dhcp6c.h wide-dhcpv6-20080615_patch/dhcp6c.h
+--- wide-dhcpv6-20080615/dhcp6c.h	2014-08-18 20:39:07.808843207 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6c.h	2014-08-18 20:37:45.708840579 +0530
+@@ -31,6 +31,7 @@
+ //#define DHCP6C_CONF SYSCONFDIR "/dhcp6c.conf"
+ #define DHCP6C_CONF "/conf/dhcp6c.conf"
+ #define DHCP6C_PIDFILE "/var/run/dhcp6c.pid"
++#define DHCP6C_TIMING_CONF "/conf/dhcp6ctiming.conf"
+ //#define DUID_FILE LOCALDBDIR "/dhcp6c_duid"
+ #define DUID_FILE "/conf/dhcp6c_duid"
+ 
+diff -Naur wide-dhcpv6-20080615/dhcp6.h wide-dhcpv6-20080615_patch/dhcp6.h
+--- wide-dhcpv6-20080615/dhcp6.h	2014-08-18 20:39:07.852843208 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6.h	2014-08-18 20:38:31.820842055 +0530
+@@ -84,26 +84,35 @@
+ /* Protocol constants */
+ 
+ /* timer parameters (msec, unless explicitly commented) */
+-#define SOL_MAX_DELAY	1000
+-#define SOL_TIMEOUT	1000
+-#define SOL_MAX_RT	120000
+-#define INF_TIMEOUT	1000
+-#define INF_MAX_RT	120000
+-#define REQ_TIMEOUT	1000
+-#define REQ_MAX_RT	30000
+-#define REQ_MAX_RC	10	/* Max Request retry attempts */
+-#define REN_TIMEOUT	10000	/* 10secs */
+-#define REN_MAX_RT	600000	/* 600secs */
+-#define REB_TIMEOUT	10000	/* 10secs */
+-#define REB_MAX_RT	600000	/* 600secs */
+-#define REL_TIMEOUT	1000	/* 1 sec */
+-#define REL_MAX_RC	5
++
++#define    SOL_MAX_DELAY   TimingParam[0]  //  1 sec Max delay of first Solicit
++#define    SOL_TIMEOUT     TimingParam[1]  //  1 sec Initial Solicit timeout
++#define    SOL_MAX_RT      TimingParam[2]  //  120 secs Max Solicit timeout value
++#define    REQ_TIMEOUT     TimingParam[3]  //  1 sec Initial Request timeout
++#define    REQ_MAX_RT      TimingParam[4]  //  30 secs Max Request timeout value
++#define    REQ_MAX_RC      TimingParam[5]  //  10 Max Request retry attempts
++#define    CNF_MAX_DELAY   TimingParam[6]  //  1 sec Max delay of first Confirm
++#define    CNF_TIMEOUT     TimingParam[7]  //  1 sec Initial Confirm timeout
++#define    CNF_MAX_RT      TimingParam[8]  //  4 secs Max Confirm timeout
++#define    CNF_MAX_RD      TimingParam[9]  //  10 secs Max Confirm duration
++#define    REN_TIMEOUT     TimingParam[10] //  10 secs Initial Renew timeout
++#define    REN_MAX_RT      TimingParam[11] //  600 secs Max Renew timeout value
++#define    REB_TIMEOUT     TimingParam[12] //  10 secs Initial Rebind timeout
++#define    REB_MAX_RT      TimingParam[13] //  600 secs Max Rebind timeout value
++#define    INF_MAX_DELAY   TimingParam[14] //  1 sec Max delay of first Information-request
++#define    INF_TIMEOUT     TimingParam[15] //  1 sec Initial Information-request timeout
++#define    INF_MAX_RT      TimingParam[16] //  120 secs Max Information-request timeout value
++#define    REL_TIMEOUT     TimingParam[17] //  1 sec Initial Release timeout
++#define    REL_MAX_RC      TimingParam[18] //  5 MAX Release attempts
++#define    DEC_TIMEOUT     TimingParam[19] //  1 sec Initial Decline timeout
++#define    DEC_MAX_RC      TimingParam[21] //  5 Max Decline attempts
++#define    HOP_COUNT_LIMIT TimingParam[22] //  32 Max hop count in a Relay-forward message
++
+ 
+ #define DHCP6_DURATION_INFINITE 0xffffffff
+ #define DHCP6_DURATION_MIN 30
+ 
+ #define DHCP6_RELAY_MULTICAST_HOPS 32
+-#define DHCP6_RELAY_HOP_COUNT_LIMIT 32
+ 
+ #define DHCP6_IRT_DEFAULT 86400	/* 1 day */
+ #define DHCP6_IRT_MINIMUM 600
+diff -Naur wide-dhcpv6-20080615/dhcp6relay.c wide-dhcpv6-20080615_patch/dhcp6relay.c
+--- wide-dhcpv6-20080615/dhcp6relay.c	2014-08-18 20:39:07.832843207 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6relay.c	2014-08-18 20:38:27.192841907 +0530
+@@ -843,7 +843,7 @@
+ 		 * message.
+ 		 * [RFC3315 Section 20.1.2]
+ 		 */
+-		if (dh6relay0->dh6relay_hcnt >= DHCP6_RELAY_HOP_COUNT_LIMIT) {
++		if (dh6relay0->dh6relay_hcnt >= HOP_COUNT_LIMIT) {
+ 			ddprintf(LOG_INFO, FNAME, "too many relay forwardings");
+ 			goto out;
+ 		}

@@ -1,0 +1,60 @@
+diff -Naur wide-dhcpv6-20080615/dhcp6c.c wide-dhcpv6-20080615_patch/dhcp6c.c
+--- wide-dhcpv6-20080615/dhcp6c.c	2012-11-06 17:35:27.230568282 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6c.c	2012-11-06 17:22:29.000000000 +0530
+@@ -1532,6 +1532,9 @@
+ 		(void)client6_recvadvert(ifp, dh6, len, &optinfo);
+ 		break;
+ 	case DH6_REPLY:
++		//Copying the serverip incase of Reply
++		
++		strcpy(optinfo.serverip,addr2str((struct sockaddr *)&from));
+ 		(void)client6_recvreply(ifp, dh6, len, &optinfo);
+ 		break;
+ 	default:
+diff -Naur wide-dhcpv6-20080615/dhcp6c_script.c wide-dhcpv6-20080615_patch/dhcp6c_script.c
+--- wide-dhcpv6-20080615/dhcp6c_script.c	2012-11-06 17:35:14.526074353 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6c_script.c	2012-11-06 17:21:17.000000000 +0530
+@@ -160,6 +160,8 @@
+ 	}
+ 	envc += bcmcsnamelen ? 1 : 0;
+ 
++	envc += (optinfo->serverip[0] != '\0')? 1 :0;
++
+ 	/* allocate an environments array */
+ 	if ((envp = malloc(sizeof (char *) * envc)) == NULL) {
+ 		ddprintf(LOG_NOTICE, FNAME,
+@@ -402,6 +404,21 @@
+ 		}
+ 	}
+ 
++	if ( optinfo->serverip[0] != '\0' )
++	{
++		elen = sizeof(optinfo->serverip);
++		
++		if ((s = envp[i++] = malloc(elen)) == NULL) {
++                        ddprintf(LOG_NOTICE, FNAME,
++                            "failed to allocate strings for BCMC Server IP");
++                        ret = -1;
++                        goto clean;
++                }
++		memset(s, 0, elen);
++		
++		snprintf(s,elen,"%s=%s","new_server_ip",optinfo->serverip);
++	}
++
+ 	/* launch the script */
+ 	pid = fork();
+ 	if (pid < 0) {
+diff -Naur wide-dhcpv6-20080615/dhcp6.h wide-dhcpv6-20080615_patch/dhcp6.h
+--- wide-dhcpv6-20080615/dhcp6.h	2012-11-06 17:39:59.000000000 +0530
++++ wide-dhcpv6-20080615_patch/dhcp6.h	2012-11-06 17:20:37.000000000 +0530
+@@ -181,7 +181,8 @@
+ 	int32_t elapsed_time;	/* elapsed time (from client to server only) */
+ 	int64_t refreshtime;	/* info refresh time for stateless options */
+ 
+-       char ifname[10];
++        char ifname[10];
++	char serverip[64];
+ 
+ 	struct dhcp6_list iapd_list; /* list of IA_PD */
+ 	struct dhcp6_list iana_list; /* list of IA_NA */

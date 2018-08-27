@@ -1,0 +1,78 @@
+--- wide-dhcpv6-20080615/dhcp6.h	2010-06-07 21:02:48.000000000 +0530
++++ wide-dhcpv6-20080615_mod/dhcp6.h	2010-06-07 20:55:08.000000000 +0530
+@@ -181,6 +181,8 @@
+ 	int32_t elapsed_time;	/* elapsed time (from client to server only) */
+ 	int64_t refreshtime;	/* info refresh time for stateless options */
+ 
++       char ifname[10];
++
+ 	struct dhcp6_list iapd_list; /* list of IA_PD */
+ 	struct dhcp6_list iana_list; /* list of IA_NA */
+ 	struct dhcp6_list reqopt_list; /* options in option request */
+
+
+--- wide-dhcpv6-20080615/dhcp6c.c	2010-06-07 21:04:02.000000000 +0530
++++ wide-dhcpv6-20080615_mod/dhcp6c.c	2010-06-07 20:55:08.000000000 +0530
+@@ -1458,6 +1458,8 @@
+ 		return;
+ 	}
+ 
++       strcpy(optinfo.ifname, ifp->ifname);
++
+ 	switch(dh6->dh6_msgtype) {
+ 	case DH6_ADVERTISE:
+ 		(void)client6_recvadvert(ifp, dh6, len, &optinfo);
+
+
+--- wide-dhcpv6-20080615/dhcp6c_script.c	2007-03-21 15:22:55.000000000 +0530
++++ wide-dhcpv6-20080615_mod/dhcp6c_script.c	2010-06-07 20:55:08.000000000 +0530
+@@ -60,6 +60,8 @@
+ #include "config.h"
+ #include "common.h"
+ 
++static char interfacename_str[] = "new_interface_name";
++
+ static char sipserver_str[] = "new_sip_servers";
+ static char sipname_str[] = "new_sip_name";
+ static char dnsserver_str[] = "new_domain_name_servers";
+@@ -87,6 +89,7 @@
+ 	char reason[] = "REASON=NBI";
+ 	struct dhcp6_listval *v;
+ 	pid_t pid, wpid;
++        char ifcount=1;
+ 
+ 	/* if a script is not specified, do nothing */
+ 	if (scriptpath == NULL || strlen(scriptpath) == 0)
+@@ -107,6 +110,9 @@
+ 	envc = 2;     /* we at least include the reason and the terminator */
+ 
+ 	/* count the number of variables */
++
++        envc += ifcount ? 1 : 0;
++    
+ 	for (v = TAILQ_FIRST(&optinfo->dns_list); v; v = TAILQ_NEXT(v, link))
+ 		dnsservers++;
+ 	envc += dnsservers ? 1 : 0;
+@@ -173,6 +179,22 @@
+ 		ret = -1;
+ 		goto clean;
+ 	}
++
++
++	if (ifcount) {
++		elen = sizeof (interfacename_str) + ifcount + 1;
++		if ((s = envp[i++] = malloc(elen)) == NULL) {
++			dprintf(LOG_NOTICE, FNAME,
++			    "failed to allocate strings for Interface name");
++			ret = -1;
++			goto clean;
++		}
++		memset(s, 0, elen);
++		snprintf(s, elen, "%s=", interfacename_str);
++			strcat(s,optinfo->ifname);
++	}
++
++    
+ 	/* "var=addr1 addr2 ... addrN" + null char for termination */
+ 	if (dnsservers) {
+ 		elen = sizeof (dnsserver_str) +

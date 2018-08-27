@@ -1,0 +1,161 @@
+diff -Naur wide-dhcpv6-20080615-orig/common.c wide-dhcpv6-20080615/common.c
+--- wide-dhcpv6-20080615-orig/common.c	2016-10-04 17:54:46.707016613 +0530
++++ wide-dhcpv6-20080615/common.c	2016-10-19 11:14:04.336697148 +0530
+@@ -97,7 +97,7 @@
+ #endif
+ 
+ #define MAXDNAME 255
+-
++char FqdnName[MAX_SIZE];
+ int foreground;
+ int debug_thresh;
+ extern int retry_interval;
+@@ -2263,6 +2263,23 @@
+ 			goto fail;
+ 		}
+ 	}
++	if(optinfo->fqdn.fqdn_len)
++	{
++		dnsencode(FqdnName,&(optinfo->fqdn.fqdn_name_flag[1]),127);
++	}
++	else
++	{
++		--optinfo->fqdn.fqdn_len;
++	}
++
++	if ( copy_option(DH6OPT_CLIENT_FQDN, optinfo->fqdn.fqdn_len+2,
++	      &optinfo->fqdn.fqdn_name_flag,&p, optep, &len) != 0) 
++	{
++		goto fail;
++	}
++		
++		
++
+ 
+ 	for (op = TAILQ_FIRST(&optinfo->iana_list); op;
+ 	    op = TAILQ_NEXT(op, link)) {
+diff -Naur wide-dhcpv6-20080615-orig/common.h wide-dhcpv6-20080615/common.h
+--- wide-dhcpv6-20080615-orig/common.h	2016-10-04 17:55:26.094127538 +0530
++++ wide-dhcpv6-20080615/common.h	2016-10-19 11:13:33.353383595 +0530
+@@ -99,6 +99,8 @@
+ #define SO_REUSEPORT SO_REUSEADDR
+ #endif
+ 
++#define MAX_SIZE 128
++
+ /* s*_len stuff */
+ static __inline u_int8_t
+ sysdep_sa_len (const struct sockaddr *sa)
+@@ -120,6 +122,8 @@
+ extern int foreground;
+ extern int debug_thresh;
+ extern char *device;
++extern char FqdnName[MAX_SIZE];
++
+ 
+ /* search option for dhcp6_find_listval() */
+ #define MATCHLIST_PREFIXLEN 0x1
+diff -Naur wide-dhcpv6-20080615-orig/dhcp6.h wide-dhcpv6-20080615/dhcp6.h
+--- wide-dhcpv6-20080615-orig/dhcp6.h	2016-10-04 17:55:26.094127538 +0530
++++ wide-dhcpv6-20080615/dhcp6.h	2016-10-18 17:12:46.191615604 +0530
+@@ -81,6 +81,8 @@
+ #define DH6PORT_DOWNSTREAM	"546"
+ #define DH6PORT_UPSTREAM	"547"
+ 
++#define MAX_SIZE 128
++
+ /* Protocol constants */
+ 
+ /* timer parameters (msec, unless explicitly commented) */
+@@ -142,6 +144,12 @@
+ 	int plen;
+ };
+ 
++struct dhcp6_fqdn
++{
++	size_t fqdn_len;
++	char fqdn_name_flag[MAX_SIZE];
++};
++
+ struct dhcp6_statefuladdr {	/* IA_NA */
+ 	u_int32_t pltime;
+ 	u_int32_t vltime;
+@@ -184,6 +192,8 @@
+ struct dhcp6_optinfo {
+ 	struct duid clientID;	/* DUID */
+ 	struct duid serverID;	/* DUID */
++	struct dhcp6_fqdn fqdn; /*fully qualified domain name*/
++	int fqdn_type;
+ 
+ 	int rapidcommit;	/* bool */
+ 	int pref;		/* server preference */
+diff -Naur wide-dhcpv6-20080615-orig/dhcp6c.c wide-dhcpv6-20080615/dhcp6c.c
+--- wide-dhcpv6-20080615-orig/dhcp6c.c	2016-10-04 17:55:26.094127538 +0530
++++ wide-dhcpv6-20080615/dhcp6c.c	2016-10-19 11:15:09.423254788 +0530
+@@ -113,6 +113,7 @@
+ static int ctldigestlen;
+ 
+ static int infreq_mode = 0;
++static int fqdn_tmp_type=0;
+ 
+ static inline int get_val32 __P((char **, int *, u_int32_t *));
+ static inline int get_ifname __P((char **, int *, char *, int));
+@@ -164,7 +165,7 @@
+ 	int argc;
+ 	char **argv;
+ {
+-	int ch, pid;
++	int ch, pid,retVal;
+ 	char *progname;
+ 	FILE *pidfp;
+ 	struct dhcp6_if *ifp;
+@@ -179,7 +180,7 @@
+ 	else
+ 		progname++;
+ 
+-	while ((ch = getopt(argc, argv, "c:dDfik:p:I:R:")) != -1) {
++	while ((ch = getopt(argc, argv, "c:dDfik:p:I:R:F:")) != -1) {
+ 		switch (ch) {
+ 		case 'I':
+ 			retry_interval = atoi(optarg);
+@@ -216,7 +217,14 @@
+ 		case 'p':
+ 			pid_file = optarg;
+ 			break;
+-		default:
++		case 'F':
++			fqdn_tmp_type=DH6OPT_CLIENT_FQDN;
++			memset(FqdnName,0x0,MAX_SIZE);
++			retVal=snprintf(FqdnName,sizeof(FqdnName),"%s",optarg);
++			if(retVal>sizeof(FqdnName))
++				printf("buffer overflow\n");
++			break;
++        default:
+ 			usage();
+ 			exit(0);
+ 		}
+@@ -280,7 +288,7 @@
+ {
+ 
+ 	fprintf(stderr, "usage: dhcp6c [-c configfile] [-dDfi] "
+-	    "[-p pid-file] interface [interfaces...]\n");
++	    "[-p pid-file] interface [interfaces...] [-F domain name ..]\n");
+ }
+ 
+ /*	Initailize the DHCPv6 Timing Parameters
+@@ -1381,6 +1389,15 @@
+ 		ddprintf(LOG_ERR, FNAME, "failed to copy client ID");
+ 		goto end;
+ 	}
++	
++	/* fqdn option*/
++	if((optinfo.fqdn_type=fqdn_tmp_type)&&(ev->state==DHCP6S_REQUEST || ev->state==DHCP6S_SOLICIT || ev->state== DHCP6S_RENEW ||  ev->state==DHCP6S_REBIND)){
++		optinfo.fqdn.fqdn_name_flag[0]=0x1;
++    	optinfo.fqdn.fqdn_len=strlen(FqdnName);
++    }
++	
++	
++	
+ 
+ 	/* rapid commit (in Solicit only) */
+ 	if (ev->state == DHCP6S_SOLICIT &&

@@ -1,0 +1,56 @@
+--- wide-dhcpv6-20080615/dhcp6c.c	2012-02-03 18:43:51.024129604 +0530
++++ wide-dhcpv6-20080615_new/dhcp6c.c	2012-02-03 18:45:15.339769440 +0530
+@@ -86,6 +86,8 @@
+ static int retry = 0xFF;//DHCP6C will send SOLICIT forever if IP is not received, 0xFF is defined as send SOLICIT forever
+ #define SIGF_TERM 0x1
+ #define SIGF_HUP 0x2
++#define SIGF_USR1 0x3
++#define SIGF_USR2 0x4
+ 
+ const dhcp6_mode_t dhcp6_mode = DHCP6_MODE_CLIENT;
+ 
+@@ -276,6 +278,35 @@
+ 	    "[-p pid-file] interface [interfaces...]\n");
+ }
+ 
++static int InstallSignal(int SigNum,void (*sighandler)(int sig))
++{
++    struct sigaction action;
++
++    action.sa_handler = sighandler;
++    (void)sigfillset( &action.sa_mask );
++    action.sa_flags = SA_RESTART;
++    if( sigaction( SigNum, &action, NULL ) < 0 )
++    {
++        printf( "Cannot catch signal SigNum %d\n",SigNum);
++    }
++    return 0;
++}
++
++static void sigusr1(int i)
++{
++            exit_ok = 0;
++            free_resources(NULL);
++            ddprintf(LOG_DEBUG, FNAME, "Renewing...");
++            client6_startall(1);
++
++}
++static void sigusr2(int i)
++{
++            ddprintf(LOG_DEBUG, FNAME, "Releasing...");
++            exit_ok = 0;
++            free_resources(NULL);
++}
++
+ /*------------------------------------------------------------*/
+ 
+ void
+@@ -404,6 +435,8 @@
+ 		    strerror(errno));
+ 		exit(1);
+ 	}
++        InstallSignal(SIGUSR1,sigusr1);
++        InstallSignal(SIGUSR2,sigusr2);
+ }
+ 
+ int
