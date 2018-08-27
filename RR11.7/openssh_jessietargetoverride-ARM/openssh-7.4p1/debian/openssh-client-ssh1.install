@@ -1,0 +1,5 @@
+#! /usr/bin/dh-exec
+
+debian/build-deb-ssh1/scp => usr/bin/scp1
+debian/build-deb-ssh1/ssh => usr/bin/ssh1
+debian/build-deb-ssh1/ssh-keygen => usr/bin/ssh-keygen1

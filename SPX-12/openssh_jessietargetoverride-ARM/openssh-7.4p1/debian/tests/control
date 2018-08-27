@@ -1,0 +1,11 @@
+Tests: regress
+Restrictions: needs-root allow-stderr
+Depends: devscripts,
+         openssh-client,
+         openssh-server,
+         openssh-sftp-server,
+         openssl,
+         putty-tools (>= 0.67-2),
+         python-twisted-conch (>= 1:15.5.0-1),
+         sudo,
+         @builddeps@,
