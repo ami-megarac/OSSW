@@ -1,60 +1,54 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: stunnel
-Upstream-Contact: Michal Trojnara <Michal.Trojnara@mirt.net>
-Source: http://www.stunnel.org/download/source.html
-License: GPL-2+-openssl
+This is Debian GNU/Linux's prepackaged version of the FSF's GNU
+Readline library.
 
-Files: *
+This package was put together by Matthias Klose <doko@debian.org>, derived
+from the bash package by Guy Maor <maor@debian.org>, from the GNU sources at
+
+	ftp.gnu.org:/pub/gnu/readline/readline-6.0.tar.gz.
+
+Upstream Authors:
+
+    Chet Ramey <chet.ramey@case.edu>
+    Jeff Solomon <jsolomon@stanford.edu> (examples/excallback.c)
+    Harold Levy <Harold.Levy@synopsys.com> (examples/rl-fgets.c)
+    Juergen Weigert <jnweiger@immd4.informatik.uni-erlangen.de> (examples/rlfe)
+    Michael Schroeder <mlschroe@immd4.informatik.uni-erlangen.de> (examples/rlfe)
+    Oliver Laumann (examples/rlfe)
+
 Copyright:
-  (C) 1998-2014  Michal Trojnara <Michal.Trojnara@mirt.net>
-  (c) 2014 Mark Theunissen
-License: GPL-2+-openssl
 
-Files: src/stunnel3.in
-Copyright: (C) 2004-2012 Michal Trojnara <Michal.Trojnara@mirt.net>
-License: GPL-2+
+    Copyright (C) 1987-2009 Free Software Foundation, Inc.
+    Copyright (C) 1999 Jeff Solomon (examples/excallback.c)
+    Copyright (C) 2003-2004 Harold Levy (examples/rl-fgets.c)
+    Copyright (C) 1993-2002 Juergen Weigert (examples/rlfe)
+    Copyright (C) 1993-2002 Michael Schroeder (examples/rlfe)
+    Copyright (C) 1987 Oliver Laumann (examples/rlfe)
 
-Files: debian/*
-Copyright:
- (C) 1998-2001  Paolo Molaro <lupus@debian.org>
- (C) 2003-2007  Julien Lemoine <speedblue@debian.org>
- (C) 2007-2012  Luis Rodrigo Gallardo Cruz <rodrigo@debian.org>
- (C) 2013       Salvatore Bonaccorso <carnil@debian.org>
- (C) 2014       Peter Pentchev <roam@ringlet.net>
-License: GPL-2+-openssl
+License:
 
-License: GPL-2+-openssl
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- On Debian systems, the complete text of the GNU General Public License
- can be found in file "/usr/share/common-licenses/GPL-2".
- .
- Linking stunnel statically or dynamically with other modules is making
- a combined work based on stunnel. Thus, the terms and conditions of the
- GNU General Public License cover the whole combination.
- .
- In addition, as a special exception, the copyright holder of stunnel gives you
- permission to combine stunnel with free software programs or libraries that
- are released under the GNU LGPL and with code included in the standard release
- of OpenSSL under the OpenSSL License (or modified versions of such code, with
- unchanged license). You may copy and distribute such a system following the
- terms of the GNU GPL for stunnel and the licenses of the other code concerned.
- .
- Note that people who make modified versions of stunnel are not obligated to
- grant this special exception for their modified versions; it is their choice
- whether to do so. The GNU General Public License gives permission to release
- a modified version without this exception; this exception also makes it
- possible to release a modified version which carries forward this exception.
+    Readline is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-License: GPL-2+
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- On Debian systems, the complete text of the GNU General Public License
- can be found in file "/usr/share/common-licenses/GPL-2".
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Readline.  If not, see <http://www.gnu.org/licenses/>.
+
+    examples/rl-fgets.c: GPL v2 or later.
+    examples/rlfe: GPL v2 or later.
+
+On Debian systems, the complete text of the GNU General Public License
+can be found in `/usr/share/common-licenses/GPL-3'.
+
+The Debian packaging is:
+
+    Copyright (C) 1999-2009 Matthias Klose <doko@debian.org>
+
+and is licensed under the GPL version 3, 
+see `/usr/share/common-licenses/GPL-3'.
 

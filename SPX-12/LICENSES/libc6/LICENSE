@@ -483,4 +483,30 @@ from <git://sourceware.org/git/glibc.git>
     software is freely granted, provided that this notice
     is preserved.
 
-* Part of stdio-common/tst-printf
+* Part of stdio-common/tst-printf.c is copyright C E Chew:
+
+    (C) Copyright C E Chew
+
+    Feel free to copy, use and distribute this software provided:
+
+         1. you do not pretend that you wrote it
+         2. you leave this copyright notice intact.
+
+* Various long double libm functions are copyright Stephen L. Moshier:
+
+    Copyright 2001 by Stephen L. Moshier <moshier@na-net.ornl.gov>
+
+     This library is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public
+     License as published by the Free Software Foundation; either
+     version 2.1 of the License, or (at your option) any later version.
+
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this library; if not, see
+     <http://www.gnu.org/licenses/>.  */
+

@@ -1,6 +1,0 @@
-/etc/default/stunnel4
-/etc/init.d/stunnel4
-/etc/logrotate.d/stunnel4
-/etc/ppp/ip-down.d/0stunnel4
-/etc/ppp/ip-up.d/0stunnel4
-/etc/stunnel/README

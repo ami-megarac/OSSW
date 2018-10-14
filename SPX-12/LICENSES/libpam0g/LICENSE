@@ -1,27 +1,68 @@
-This package was debianized by Remco van de Meent remco@debian.org on
-Sat, 6 Feb 1999 15:10:15 +0100.  Earlier versions were debianized by
-Christoph Lameter clameter@debian.org on Tue, 27 Jan 1998 20:37:16 -0800
-and Joel Klecker jk@espy.org took over the package on Thu, 26 Mar 1998.
-Blars Blarson, Colin Watson and Christian Perrier contributed to NMUs
-in 2005 and the package is currently team maintained by Anibal Monsalve
-Salazar, Matt Taggart and Matthew Wilcox.
+This package was debianized by J.H.M. Dassen (Ray) jdassen@debian.org on
+Wed, 23 Sep 1998 20:29:32 +0200.
 
-The package was downloaded from
-ftp://ftp.kernel.org/pub/software/utils/pciutils/
+It was downloaded from ftp://ftp.kernel.org/pub/linux/libs/pam/pre/
 
-Upstream Author: Martin Mares <mj@ucw.cz>
+Copyright (C) 1994, 1995, 1996 Olaf Kirch, <okir@monad.swb.de>
+Copyright (C) 1995 Wietse Venema
+Copyright (C) 1995, 2001-2008 Red Hat, Inc.
+Copyright (C) 1996-1999, 2000-2003, 2005 Andrew G. Morgan <morgan@kernel.org>
+Copyright (C) 1996, 1997, 1999 Cristian Gafton <gafton@redhat.com>
+Copyright (C) 1996, 1999 Theodore Ts'o
+Copyright (C) 1996 Alexander O. Yuriev
+Copyright (C) 1996 Elliot Lee
+Copyright (C) 1997 Philip W. Dalrymple <pwd@mdtsoft.com>
+Copyright (C) 1999 Jan Rękorajski
+Copyright (C) 1999 Ben Collins <bcollins@debian.org>
+Copyright (C) 2000-2001, 2003, 2005, 2007 Steve Langasek
+Copyright (C) 2003, 2005 IBM Corporation
+Copyright (C) 2003, 2006 SuSE Linux AG.
+Copyright (C) 2003 Nalin Dahyabhai <nalin@redhat.com>
+Copyright (C) 2005-2008 Thorsten Kukuk <kukuk@thkukuk.de>
+Copyright (C) 2005 Darren Tucker
 
-Copyright:
 
-Copyright (c) 1997--2006 Martin Mares <mj@ucw.cz>
+Unless otherwise *explicitly* stated the following text describes the
+licensed conditions under which the contents of this Linux-PAM release
+may be distributed:
 
-All files in this package can be freely distributed and used according
-to the terms of the GNU General Public License, either version 2 or
-(at your opinion) any newer version. This is the same distribution
-policy as for the Linux kernel itself -- see /usr/src/linux/COPYING
-for details.
+-------------------------------------------------------------------------
+Redistribution and use in source and binary forms of Linux-PAM, with
+or without modification, are permitted provided that the following
+conditions are met:
 
+1. Redistributions of source code must retain any existing copyright
+   notice, and this entire permission notice in its entirety,
+   including the disclaimer of warranties.
 
-A full copy of the GNU GPL can be found in /usr/share/common-licenses on
-Debian systems.
+2. Redistributions in binary form must reproduce all prior and current
+   copyright notices, this list of conditions, and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+3. The name of any author may not be used to endorse or promote
+   products derived from this software without their specific prior
+   written permission.
+
+ALTERNATIVELY, this product may be distributed under the terms of the
+GNU General Public License, in which case the provisions of the GNU
+GPL are required INSTEAD OF the above restrictions.  (This clause is
+necessary due to a potential conflict between the GNU GPL and the
+restrictions contained in a BSD-style copyright.)
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+-------------------------------------------------------------------------
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL'.
 

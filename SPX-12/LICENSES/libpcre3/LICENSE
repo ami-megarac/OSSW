@@ -1,79 +1,75 @@
-It was downloaded from ftp://ftp.gnu.org/gnu/findutils
+This is Debian GNU/Linux's prepackaged version of the PCRE regular 
+expression library and associated pgrep utility.
 
-Debian maintainer history: The original package was put together by
-Ian Murdock <imurdock@debian.org>, afterwards Kevin Dalley
-<kevind@rahul.net> took over. 2003-07 Andreas Metzler
-<ametzler@debian.org> followed.
+This package was put together by me, Mark Baker <mbaker@iee.org> from the
+original sources obtained from ftp.csx.cam.ac.uk:/pub/software/programming/pcre.
 
-Upstream Authors:
-* GNU find was written by Eric Decker <cire@cisco.com>,
-with enhancements by David MacKenzie <djm@gnu.org>,
-Jay Plett <jay@silence.princeton.nj.us>,
-and Tim Wood <axolotl!tim@toad.com>.
-The idea for -print0 and xargs -0 came from
-Dan Bernstein <brnstnd@kramden.acf.nyu.edu>.  
-Improvements have been made by James Youngman <jay@gnu.org>.
+PCRE LICENCE
+------------
 
-* GNU xargs
-was originally written by Mike Rendell, with enhancements by David
-MacKenzie. Modifications by James Youngman Dmitry V. Levin
+PCRE is a library of functions to support regular expressions whose syntax
+and semantics are as close as possible to those of the Perl 5 language.
 
-* GNU locate and its associated utilities were originally
-written by James Woods, with enhancements by David MacKenzie, James Youngman
-and Bas van Gompel.
+Release 7 of PCRE is distributed under the terms of the "BSD" licence, as
+specified below. The documentation for PCRE, supplied in the "doc"
+directory, is distributed under the same terms as the software itself.
 
-Upstream's AUTHORS lists these major contributors:
-Eric B. Decker
-Michael Rendell
-David J. MacKenzie
-Jim Meyering
-Tim Wood
-Kevin Dalley <kevind@rahul.net>
-Paul Eggert <eggert@cs.ucla.edu>
-James Youngman <jay@gnu.org>
-Jay Plett
-Paul Sheer
-Dmitry V. Levin
-Bas van Gompel
-Eric Blake <ebb9@byu.net>
+The basic library functions are written in C and are freestanding. Also
+included in the distribution is a set of C++ wrapper functions.
 
-Current upstream maintainer is James Youngman <jay@gnu.org>.
 
-----------------------------
-   Copyright (C) 1990, 1991, 1992, 1993, 1994, 2000, 2003,
-                 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+THE BASIC LIBRARY FUNCTIONS
+---------------------------
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+Written by:       Philip Hazel
+Email local part: ph10
+Email domain:     cam.ac.uk
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+University of Cambridge Computing Service,
+Cambridge, England.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-----------------------------
+Copyright (c) 1997-2007 University of Cambridge
+All rights reserved.
 
-On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
 
-=============================================
-DOCUMENTATION
-----------------------------
-Copyright (C) 1994, 1996, 1998, 2000, 2001, 2003, 2004, 2005, 2006,
-2007 Free Software Foundation, Inc.
+THE C++ WRAPPER FUNCTIONS
+-------------------------
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2 or
-any later version published by the Free Software Foundation; with no
-Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
-Texts.  A copy of the license is included in the section entitled
-``GNU Free Documentation License.''
-----------------------------
+Contributed by:   Google Inc.
 
-On Debian GNU/Linux systems, the complete text of the GNU Free Documentation
-License, Version 1.2 can be found in `/usr/share/common-licenses/GFDL-1.2'.
+Copyright (c) 2007, Google Inc.
+All rights reserved.
+
+
+THE "BSD" LICENCE
+-----------------
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+    * Neither the name of the University of Cambridge nor the name of Google
+      Inc. nor the names of their contributors may be used to endorse or
+      promote products derived from this software without specific prior
+      written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+End
 

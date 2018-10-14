@@ -1,46 +1,34 @@
-This is the Debian prepackaged version of the FSF's GNU m4 macro processor.
-GNU `m4' has been originally written by René Seindal, from Denmark,
-with subsequent changes by François Pinard and other volunteers on
-the Internet. A list of contributors to the GNU program is in the
-THANKS file in the source distribution, or appended below in the
-binary package.
+This package was debianized by Anthony Towns <ajt@debian.org> on
+Tue, 10 Aug 1999 12:06:33 +1000.
 
-This package was first put together by Ian Jackson <ijackson@nyx.cs.du.edu>
-and is currently maintained by Santiago Vila <sanvila@debian.org>.
+It was downloaded from ftp://ftp.porcupine.org/pub/security/index.html
 
-The GNU sources for this release were obtained from
+and includes ftp://ftp.porcupine.org/pub/security/tcpd-blacklist-patch
 
-http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz
+Copyright updated on 2001/06/08 from 
+ftp://ftp.porcupine.org/pub/security/tcp_wrappers_license
 
-The changes were very minimal - merely adding support for the Debian
-package maintenance scheme, by adding various debian/* files.
+Upstream Author: Wietse Venema
 
+Copyright:
 
-Program Copyright (C) 1989-2013 Free Software Foundation, Inc.
-Modifications for Debian Copyright (C) 1994 Ian Jackson.
+/************************************************************************
+* Copyright 1995 by Wietse Venema.  All rights reserved.  Some individual
+* files may be covered by other copyrights.
+*
+* This material was originally written and compiled by Wietse Venema at
+* Eindhoven University of Technology, The Netherlands, in 1990, 1991,
+* 1992, 1993, 1994 and 1995.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that this entire copyright notice
+* is duplicated in all such copies.
+*
+* This software is provided "as is" and without any expressed or implied
+* warranties, including, without limitation, the implied warranties of
+* merchantibility and fitness for any particular purpose.
+************************************************************************/
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3, or (at your option)
-any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-
-
-M4 manual (m4.info) Copyright (C) 1989-1994, 2004-2013 Free Software Foundation, Inc.
-
-     Permission is granted to copy, distribute and/or modify this
-     document under the terms of the GNU Free Documentation License,
-     Version 1.3 or any later version published by the Free Software
-     Foundation; with no Invariant Sections, no Front-Cover Texts, and
-     no Back-Cover Texts.
-
-
-On Debian systems, the complete text of the GNU General Public License
-can be found in `/usr/share/common-licenses/GPL', and the complete
-text of the GNU Free Documentation License can be found in
-`/usr/share/common-licenses/GFDL'.
+Thanks to Wietse Venema for his permission to include the tcp_wrapper
+package in the Debian Distribution.
 

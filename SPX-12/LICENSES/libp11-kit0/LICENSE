@@ -196,4 +196,77 @@ License: BSD-3-Clause
     documentation and/or other materials provided with the distribution.
  4. Neither the name of the University nor the names of its contributors
     may be used to endorse or promote products derived from this software
-  
+    without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+
+Files: common/mock.h common/path.h common/tests/frob-getauxval.c
+ common/tests/test-lexer.c common/tests/test-message.c
+ common/tests/test-path.c common/tests/test-url.c
+ p11-kit/iter.c p11-kit/iter.h p11-kit/tests/test-iter.c
+ p11-kit/tests/test-proxy.c p11-kit/virtual.h tests/test-util.c
+ trust/tests/frob-nss-trust.c trust/tests/test-parser.c
+ trust/tests/test-persist.c 
+Copyright: 2013 Red Hat Inc.
+License: BSD-3-Clause
+
+Files: p11-kit/tests/mock-module-ep.c p11-kit/tests/test-progname.c
+Copyright: 2012 Stefan Walter
+License: BSD-3-Clause
+
+
+
+Files: debian/*
+Copyright: 2011 Chris Coulson <chris.coulson@canonical.com>
+           2011-2013 Andreas Metzler <ametzler@debian.org>
+License: BSD-3-Clause
+
+
+Files: po/de.po
+Copyright: 2011 Chris Leick
+License: This file is distributed under the same license as the debian
+ files of the p11-kit package.
+
+Files: po/fi.po
+Copyright: 2012 Rosetta Contributors and Canonical Ltd 2012
+ Eerik Uusi-Illikainen https://launchpad.net/~ekiuusi-4, 2012
+ Timo Jyrinki <timo.jyrinki@iki.fi>, 2012
+License: This file is distributed under the same license as the p11-kit
+ package.
+
+
+License: BSD-3-Clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ 3. Neither the name of the University nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+

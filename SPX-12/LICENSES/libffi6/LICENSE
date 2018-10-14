@@ -1,74 +1,80 @@
-This is the Debian GNU/Linux prepackaged version of the EXT2 file
-system utilities (e2fsck, mke2fs, etc.).  The EXT2 utilities were
-written by Theodore Ts'o <tytso@mit.edu> and Remy Card <card@masi.ibp.fr>.
+This package was debianized by Matthias Klose <doko@debian.org>
+on Mon, 10 Mar 2008 05:46:40 +0000.
 
-Sources were obtained from http://sourceforge.net/projects/e2fsprogs
+It was downloaded from ftp://sourceware.org/pub/libffi/
 
-Packaging is Copyright (c) 2003-2007 Theodore Ts'o <tytso@mit.edu>
-             Copyright (c) 1997-2003 Yann Dirson <dirson@debian.org>
-	     Copyright (c) 2001 Alcove <http://www.alcove.com/>
-	     Copyright (c) 1997 Klee Dienes
-	     Copyright (c) 1995-1996 Michael Nonweiler <mrn20@cam.ac.uk>
+Upstream Authors: 
 
-Upstream Author: Theodore Ts'o <tytso@mit.edu>
+    Anthony Green <green@redhat.com>
+    GCC developers
+    See the README and below in the list of copyright holders for a more
+    complete list.
 
-Copyright notice:
+Copyright: 
+    Copyright (c) 1996-2011 Red Hat, Inc.
+    Copyright (C) 1996-2011 Anthony Green
+    Copyright (C) 1996-2010 Free Software Foundation, Inc
+    Copyright (c) 2003, 2004, 2006, 2007, 2008 Kaz Kojima
+    Copyright (c) 2010, 2011, Plausible Labs Cooperative , Inc.
+    Copyright (c) 2010 CodeSourcery
+    Copyright (c) 1998 Andreas Schwab
+    Copyright (c) 2000 Hewlett Packard Company
+    Copyright (c) 2009 Bradley Smith
+    Copyright (c) 2008 David Daney
+    Copyright (c) 2004 Simon Posnjak
+    Copyright (c) 2005 Axis Communications AB
+    Copyright (c) 1998 Cygnus Solutions
+    Copyright (c) 2004 Renesas Technology
+    Copyright (c) 2002, 2007  Bo Thorsen <bo@suse.de>
+    Copyright (c) 2002 Ranjit Mathew
+    Copyright (c) 2002 Roger Sayle
+    Copyright (c) 2000, 2007 Software AG
+    Copyright (c) 2003 Jakub Jelinek
+    Copyright (c) 2000, 2001 John Hornkvist
+    Copyright (c) 1998 Geoffrey Keating
+    Copyright (c) 2008 Björn König
 
-This package, the EXT2 filesystem utilities, are made available under
-the GNU Public License version 2, with the exception of the lib/ext2fs
-and lib/e2p libraries, which are made available under the GNU Library
-General Public License Version 2, the lib/uuid library which is made
-available under a BSD-style license and the lib/et and lib/ss
-libraries which are made available under an MIT-style license.
+License:
 
-	Copyright (c) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 
-	2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 by Theodore Ts'o
+    libffi - Copyright (c) 1996-2010  Red Hat, Inc and others.
+    See source files for details.
 
-On Debian GNU systems, the complete text of the GNU General Public
-License can be found in `/usr/share/common-licenses/GPL-2'.  The
-complete text of the GNU Library General Public License can be found
-in '/usr/share/common-licenses/LGPL-2'.
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    ``Software''), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
 
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
 
-The license used for lib/et and lib/ss libraries is:
+    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-   Copyright 1987 by the Student Information Processing Board
-   of the Massachusetts Institute of Technology
+    Documentation:
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation; either version 2, or (at your option) any
+    later version.  A copy of the license is included in the
+    section entitled ``GNU General Public License''.
 
-   Permission to use, copy, modify, and distribute this software and
-   its documentation for any purpose is hereby granted, provided that
-   the names of M.I.T. and the M.I.T. S.I.P.B. not be used in
-   advertising or publicity pertaining to distribution of the software
-   without specific, written prior permission.  M.I.T. and the
-   M.I.T. S.I.P.B. make no representations about the suitability of
-   this software for any purpose.  It is provided "as is" without
-   express or implied warranty.
+doc/*:
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU General Public License as published by the
+  Free Software Foundation; either version 2, or (at your option) any
+  later version.  A copy of the license is included in the
+  section entitled ``GNU General Public License''.
 
-The license used for lib/uuid is:
+  On Debian GNU/Linux systems, the complete text of the GNU General
+  Public License is in `/usr/share/common-licenses/GPL'.
 
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions
-   are met:
-   1. Redistributions of source code must retain the above copyright
-      notice, and the entire permission notice in its entirety,
-      including the disclaimer of warranties.
-   2. Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-   3. The name of the author may not be used to endorse or promote
-      products derived from this software without specific prior
-      written permission.
-
-   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-   OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, ALL OF
-   WHICH ARE HEREBY DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE
-   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-   OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-   BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-   USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE POSSIBILITY OF SUCH
-   DAMAGE.
+The Debian packaging is (C) 2008, 2011 Matthias Klose <doko@debian.org>
+and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
 

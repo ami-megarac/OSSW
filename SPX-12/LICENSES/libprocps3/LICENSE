@@ -1,67 +1,64 @@
-Format: http://dep.debian.net/deps/dep5/
-Upstream-Name: luaposix
-Upstream-Contact: Reuben Thomas <rrt@sc3d.org>
-Source: https://github.com/rrthomas/luaposix/
+This is the Debian Linux prepackaged version of the /proc file
+system utilities.
 
-Files: *
-Copyright: 2009-2011, Reuben Thomas
-License: MIT/X
+This package was downloaded from:
+  https://gitorious.org/procps
 
-Files: lcurses.c
-Copyright: 2004-2007, Tiago Dionizio <tiago.dionizio@gmail.com>
-  2009-2011, Reuben Thomas <rrt@sc3d.org>
-License: MIT/X
 
-Files: lposix.c
-Copyright: 2010-2012, Reuben Thomas <rrt@sc3d.org>
-  2008-2010, Natanael Copa <natanael.copa@gmail.com>
-License: MIT/X
+Upstream Authors:
+Werner Almesberger <almesber@di.epfl.ch>, Roger Binns, Charles
+Blake <cblake@ucsd.edu>, Brian Edmonds, David Engel <david@ods.com>,
+Larry Greenfield <greenfie@gauss.rutgers.edu>, Michael K. Johnson
+<johnsonm@sunsite.unc.edu>, Branko Lankester <lankeste@fwi.uva.nl>,
+Robert Nation <nation@rocket.sanders.lockheed.com>, Michael Shields
+<mjshield@nyx.cs.du.edu>, Henry Ware <al172@yfn.ysu.edu>, Matt
+Welsh <mdw@sunsite.unc.edu>, Albert D. Cahalan, Jim C. Warner
+<warnerjc@worldnet.att.net>, and Kjetil Torgrim Homme
+<kjetilho@ifi.uio.no>
 
-Files: strlcpy.c
-Copyright: 2004 Free Software Foundation, Inc.
-License: LGPL-2+
-  GNU Libltdl is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2 of the License, or (at your option) any later version.
-  .
-  As a special exception to the GNU Lesser General Public License,
-  if you distribute this file as part of a program or library that
-  is built using GNU Libtool, you may include this file under the
-  same distribution terms that you use for the rest of that program.
-  .
-  GNU Libltdl is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Lesser General Public License for more details.
-  .
-  You should have received a copy of the GNU Lesser General Public
-  License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
-  copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
-  or obtained by writing to the Free Software Foundation, Inc.,
-  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-  .
-  On Debian systems, the full text of the GNU Lesser General Public
-  License version 2 can be found in the file
-  `/usr/share/common-licenses/LGPL-2'.
+Copyright:
+  free.c:
+    Copyright 2003 Robert Love
+    Copyright 2004 Albert Cahalan
+  minimal.c:
+    Copyright 1998,2004 Albert Cahalan
+  pgrep.c:
+    Copyright 2000 Kjetil Torgrim Homme <kjetilho@ifi.uio.no>
+  pmap.c:
+    Copyright 2002 by Albert Cahalan
+  pwdx.c:
+    Copyright 2004 Nicholas Miell
+  skill.c:
+    Copyright 1998-2002 by Albert Cahalan
+  slabtop.c:
+    Copyright 2003 Chris Rivera
+  sysctl.c:
+    Copyright 1999 George Staikos
+  tload.c:
+    Copyright 1992 Branko Lankester
+  top.c:
+    Copyright 2002 James C. Warner
+  vmstat.c:
+    Copyright 1994 Henry Ware <al172@yfn.ysu.edu>
+    Copyright 2002 Albert Cahalan
+  ps/display.c, ps/parser.c: 
+    Copyright 1998-2003 by Albert Cahalan
+  ps/global.c, ps/global.c: 
+    Copyright 1998-2002 by Albert Cahalan
+  ps/help.c, ps/sortformat.c:
+    Copyright 1998-2004 by Albert Cahalan
+  ps/output.c: 
+    Copyright 1999-2004 by Albert Cahalan
 
-License: MIT/X
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  .
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  .
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
+License:
+The programs sysctl and pgrep copyright by their
+authors and redistributable under the terms of the GNU General
+Public License. On Debian Linux systems, the complete text of
+the GNU General Public License can be found in
+`/usr/share/common-licenses/GPL-2'.
 
+All other software is copyright by their authors and redistributable under 
+the terms of the GNU Library General Public License. On Debian Linux 
+systems, the complete text of the GNU Library General Public License can 
+be found in `/usr/share/common-licenses/LGPL-2'.
 
