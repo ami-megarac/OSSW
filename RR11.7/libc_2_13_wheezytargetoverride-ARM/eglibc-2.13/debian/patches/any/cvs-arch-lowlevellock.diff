@@ -1,0 +1,16 @@
+2012-03-16  David S. Miller  <davem@davemloft.net>
+
+	[BZ #13844]
+	* sysdeps/unix/sysv/linux/libc-lowlevellock.c: Include using <..>
+	instead of "...".
+
+diff --git a/nptl/sysdeps/unix/sysv/linux/libc-lowlevellock.c b/nptl/sysdeps/unix/sysv/linux/libc-lowlevellock.c
+index 28672a6..4883765 100644
+--- a/nptl/sysdeps/unix/sysv/linux/libc-lowlevellock.c
++++ b/nptl/sysdeps/unix/sysv/linux/libc-lowlevellock.c
+@@ -18,4 +18,4 @@
+    02111-1307 USA.  */
+ 
+ /* No difference to lowlevellock.c, except we lose a couple of functions.  */
+-#include "lowlevellock.c"
++#include <lowlevellock.c>

@@ -1,0 +1,33 @@
+commit 18d1425127e5712dda888bb280d5d1a038a45c7f
+Author: Aurelien Jarno <aurelien@aurel32.net>
+Date:   Tue Dec 3 11:16:16 2013 +0100
+
+    locale: don't crash if locale-archive contains all zeros
+
+    In case of power failure followed by filesystem issues locale-archive
+    can end-up containing all zeros. In that case all calls to setlocale()
+    generate a SIGFPE. This renders a system with a default non-C locale
+    unbootable.
+
+    Avoid this by ignoring the locale instead of generating a SIGFPE.
+
+2013-12-03  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* locale/loadarchive.c (_nl_load_locale_from_archive): Avoid
+	division by 0.
+
+diff --git a/locale/loadarchive.c b/locale/loadarchive.c
+index 70136dc..f723780 100644
+--- a/locale/loadarchive.c
++++ b/locale/loadarchive.c
+@@ -274,6 +274,10 @@ _nl_load_locale_from_archive (int category, const char **namep)
+   namehashtab = (struct namehashent *) ((char *) head
+ 					+ head->namehash_offset);
+ 
++  /* Avoid division by 0 if the file is corrupted.  */
++  if (__glibc_unlikely (head->namehash_size == 0))
++    goto close_and_out;
++
+   idx = hval % head->namehash_size;
+   incr = 1 + hval % (head->namehash_size - 2);
+ 

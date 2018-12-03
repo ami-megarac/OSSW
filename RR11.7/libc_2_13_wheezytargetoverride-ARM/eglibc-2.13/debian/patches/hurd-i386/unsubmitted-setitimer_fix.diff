@@ -1,0 +1,34 @@
+commit c09eae7f3f6c714da378baa492414f73974f3a69
+Author: Richard Braun <rbraun@sceen.net>
+Date:   Wed Dec 26 16:31:14 2012 +0000
+
+    Fix Hurd implementation of setitimer.
+    
+    The preemptor sigcode doesn't match since the POSIX sigcode SI_TIMER is
+    used when SIGALRM is sent. In addition, The inline version of
+    hurd_preempt_signals doesn't update _hurdsig_preempted_set. For these
+    reasons, the preemptor would be skipped by post_signal.
+    
+    * sysdeps/mach/hurd/setitimer.c (setitimer_locked): Fix preemptor setup.
+
+diff --git a/sysdeps/mach/hurd/setitimer.c b/sysdeps/mach/hurd/setitimer.c
+index fe057c9..8c0d92d 100644
+--- a/sysdeps/mach/hurd/setitimer.c
++++ b/sysdeps/mach/hurd/setitimer.c
+@@ -192,7 +192,7 @@ setitimer_locked (const struct itimerval *new, struct itimerval *old,
+ 	 run `restart_itimer' each time a SIGALRM would arrive.  */
+       static struct hurd_signal_preemptor preemptor =
+ 	{
+-	  __sigmask (SIGALRM), 0, 0,
++	  __sigmask (SIGALRM), SI_TIMER, SI_TIMER,
+ 	  &restart_itimer,
+ 	};
+       __mutex_lock (&_hurd_siglock);
+@@ -200,6 +200,7 @@ setitimer_locked (const struct itimerval *new, struct itimerval *old,
+ 	{
+ 	  preemptor.next = _hurdsig_preemptors;
+ 	  _hurdsig_preemptors = &preemptor;
++	  _hurdsig_preempted_set |= preemptor.signals;
+ 	}
+       __mutex_unlock (&_hurd_siglock);
+ 

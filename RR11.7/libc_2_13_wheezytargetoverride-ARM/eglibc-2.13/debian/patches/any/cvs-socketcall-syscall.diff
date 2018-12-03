@@ -1,0 +1,387 @@
+2014-02-20  Joseph Myers  <joseph@codesourcery.com>
+ 
+	[BZ #16610]
+	* sysdeps/unix/sysv/linux/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020621 && __ASSUME_SOCKETCALL]
+	(__ASSUME_RECVMMSG_SOCKETCALL): Define.
+	[(__LINUX_KERNEL_VERSION >= 0x020621 && (__i386__ || __x86_64__ ||
+	__sparc__ || __ia64) || (__LINUX_KERNEL_VERSION >= 0x020625 && 
+	(__powerpc__ || __sh__))] (__ASSUME_RECVMMSG_SYSCALL): Likewise.
+	[__i386__ || __sparc__]
+	(__ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL): Likewise.
+	[__ASSUME_RECVMMSG_SOCKETCALL || __ASSUME_RECVMMSG_SYSCALL]
+	(__ASSUME_RECVMMSG): Define instead of using previous
+	[__LINUX_KERNEL_VERSION >= 0x020621] condition.
+	* ports/sysdeps/unix/sysv/linux/alpha/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020621] (__ASSUME_RECVMMSG_SYSCALL):
+	Likewise.
+	* ports/sysdeps/unix/sysv/linux/arm/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020621] (__ASSUME_RECVMMSG_SYSCALL):
+	Likewise.
+	* sysdeps/unix/sysv/linux/internal_recvmmsg.S [__ASSUME_SOCKETCALL
+	&& !__ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL &&
+	!__ASSUME_RECVMMSG_SYSCALL] (__NR_recvmmsg): Undefine.
+	[__ASSUME_RECVMMSG]: Change condition to
+	[__ASSUME_RECVMMSG_SOCKETCALL].
+	* ports/sysdeps/unix/sysv/linux/mips/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020621] (__ASSUME_RECVMMSG_SYSCALL):
+	Likewise.
+	* sysdeps/unix/sysv/linux/recvmmsg.c [__ASSUME_SOCKETCALL &&
+	!__ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL &&
+	!__ASSUME_RECVMMSG_SYSCALL] (__NR_recvmmsg): Undefine.
+	[!__ASSUME_RECVMMSG]: Change condition to
+	[!__ASSUME_RECVMMSG_SOCKETCALL].
+	* ports/sysdeps/unix/sysv/linux/hppa/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020622] (__ASSUME_RECVMMSG_SYSCALL):
+	Define.
+
+	[BZ #16609]
+	* sysdeps/unix/sysv/linux/kernel-features.h [__i386__ ||
+	__powerpc__ || __s390__ || __sh__ || __sparc__]
+	(__ASSUME_SOCKETCALL): Define.
+	[__LINUX_KERNEL_VERSION && __ASSUME_SOCKETCALL]
+	(__ASSUME_ACCEPT4_SOCKETCALL): Likewise.
+	[(__LINUX_KERNEL_VERSION >= 0x02061c && (__x86_64__ || __sparc__))
+	|| (__LINUX_KERNEL_VERSION >= 0x020625 && (__powerpc__ ||
+	__sh__)) || (__LINUX_KERNEL_VERSION >= 0x030300 && (__ia64__))] 
+	(__ASSUME_ACCEPT4_SYSCALL): Likewise.
+	[__sparc__] (__ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL): Likewise.
+	[__ASSUME_ACCEPT4_SOCKETCALL || __ASSUME_ACCEPT4_SYSCALL]
+	(__ASSUME_ACCEPT4): Define instead of using previous
+	[__LINUX_KERNEL_VERSION >= 0x02061c && (__i386__ || __x86_64__ ||
+	__powerpc__ || __sparc__ || __s390__)] condition.
+	* sysdeps/unix/sysv/linux/accept4.c [__ASSUME_SOCKETCALL &&
+	!__ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL &&
+	!__ASSUME_ACCEPT4_SYSCALL] (__NR_accept4): Undefine.
+	[!__ASSUME_ACCEPT4]: Change condition to
+	[!__ASSUME_ACCEPT4_SOCKETCALL].
+	* ports/sysdeps/unix/sysv/linux/alpha/kernel-features.h
+	(__ASSUME_ACCEPT4): Change to __ASSUME_ACCEPT4_SYSCALL.  Correct
+	condition to [__LINUX_KERNEL_VERSION >= 0x030200].
+	* ports/sysdeps/unix/sysv/linux/arm/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x020624] (__ASSUME_ACCEPT4_SYSCALL):
+	Define.
+	* sysdeps/unix/sysv/linux/i386/accept4.S [__ASSUME_ACCEPT4]:
+	Change conditions to [__ASSUME_ACCEPT4_SOCKETCALL].
+	* sysdeps/unix/sysv/linux/internal_accept4.S [__ASSUME_SOCKETCALL
+	&& !__ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL &&
+	!__ASSUME_ACCEPT4_SYSCALL] (__NR_accept4): Undefine.
+	[__ASSUME_ACCEPT4]: Change condition to
+	[__ASSUME_ACCEPT4_SOCKETCALL].
+	* ports/sysdeps/unix/sysv/linux/m68k/kernel-features.h
+	(__ASSUME_SOCKETCALL): Define.
+	* ports/sysdeps/unix/sysv/linux/mips/kernel-features.h
+	[__LINUX_KERNEL_VERSION >= 0x02061f] (__ASSUME_ACCEPT4_SYSCALL):
+	Likewise.
+ 	* ports/sysdeps/unix/sysv/linux/hppa/kernel-features.h
+ 	[__LINUX_KERNEL_VERSION >= 0x020622] (__ASSUME_ACCEPT4_SYSCALL):
+
+--- a/ports/sysdeps/unix/sysv/linux/hppa/kernel-features.h
++++ b/ports/sysdeps/unix/sysv/linux/hppa/kernel-features.h
+@@ -36,4 +36,10 @@
+ # define __ASSUME_LWS_CAS		1
+ #endif
+ 
++/* Support for the accept4 and recvmmsg syscalls was added in 2.6.34.  */
++#if __LINUX_KERNEL_VERSION >= 0x020622
++# define __ASSUME_ACCEPT4_SYSCALL	1
++# define __ASSUME_RECVMMSG_SYSCALL	1
++#endif
++
+ #include_next <kernel-features.h>
+--- a/sysdeps/unix/sysv/linux/accept4.c
++++ b/sysdeps/unix/sysv/linux/accept4.c
+@@ -25,6 +25,14 @@
+ #include <sys/syscall.h>
+ #include <kernel-features.h>
+ 
++/* Do not use the accept4 syscall on socketcall architectures unless
++   it was added at the same time as the socketcall support or can be
++   assumed to be present.  */
++#if defined __ASSUME_SOCKETCALL \
++    && !defined __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL \
++    && !defined __ASSUME_ACCEPT4_SYSCALL
++# undef __NR_accept4
++#endif
+ 
+ #ifdef __NR_accept4
+ int
+@@ -43,7 +51,7 @@
+   return result;
+ }
+ #elif defined __NR_socketcall
+-# ifndef __ASSUME_ACCEPT4
++# ifndef __ASSUME_ACCEPT4_SOCKETCALL
+ extern int __internal_accept4 (int fd, __SOCKADDR_ARG addr,
+ 			       socklen_t *addr_len, int flags)
+      attribute_hidden;
+@@ -84,7 +92,8 @@
+   return -1;
+ }
+ # else
+-/* When __ASSUME_ACCEPT4 accept4 is defined in internal_accept4.S.  */
++/* When __ASSUME_ACCEPT4_SOCKETCALL accept4 is defined in
++   internal_accept4.S.  */
+ # endif
+ #else
+ int
+--- a/ports/sysdeps/unix/sysv/linux/alpha/kernel-features.h
++++ b/ports/sysdeps/unix/sysv/linux/alpha/kernel-features.h
+@@ -61,9 +61,14 @@
+ # define __ASSUME_SIGNALFD4 1
+ #endif
+ 
+-/* Support for accept4 was added for alpha after 2.6.33-rc1.  */
++/* Support for recvmmsg was added for alpha in 2.6.33.  */
+ #if __LINUX_KERNEL_VERSION >= 0x020621
+-# define __ASSUME_ACCEPT4      1
++# define __ASSUME_RECVMMSG_SYSCALL       1
++#endif
++
++/* Support for accept4 was added for alpha in 3.2.  */
++#if __LINUX_KERNEL_VERSION >= 0x030200
++# define __ASSUME_ACCEPT4_SYSCALL      1
+ #endif
+ 
+ #include_next <kernel-features.h>
+--- a/ports/sysdeps/unix/sysv/linux/arm/kernel-features.h
++++ b/ports/sysdeps/unix/sysv/linux/arm/kernel-features.h
+@@ -57,6 +57,16 @@
+ # define __ASSUME_SIGNALFD4	1
+ #endif
+ 
++/* Support for the recvmmsg syscall was added in 2.6.33.  */
++#if __LINUX_KERNEL_VERSION >= 0x020621
++# define __ASSUME_RECVMMSG_SYSCALL	1
++#endif
++
++/* Support for the accept4 syscall was added in 2.6.36.  */
++#if __LINUX_KERNEL_VERSION >= 0x020624
++# define __ASSUME_ACCEPT4_SYSCALL	1
++#endif
++
+ #include_next <kernel-features.h>
+ 
+ /* Support for pselect6, ppoll and epoll_pwait was added in 2.6.32.  */
+--- a/sysdeps/unix/sysv/linux/i386/accept4.S
++++ b/sysdeps/unix/sysv/linux/i386/accept4.S
+@@ -24,7 +24,7 @@
+ #define EINVAL	22
+ #define ENOSYS	38
+ 
+-#ifdef __ASSUME_ACCEPT4
++#ifdef __ASSUME_ACCEPT4_SOCKETCALL
+ # define errlabel SYSCALL_ERROR_LABEL
+ #else
+ # define errlabel .Lerr
+@@ -116,7 +116,7 @@
+ 	ret
+ #endif
+ 
+-#ifndef __ASSUME_ACCEPT4
++#ifndef __ASSUME_ACCEPT4_SOCKETCALL
+ 	/* The kernel returns -EINVAL for unknown socket operations.
+ 	   We need to convert that error to an ENOSYS error.  */
+ .Lerr:	cmpl $-EINVAL, %eax
+--- a/sysdeps/unix/sysv/linux/internal_accept4.S
++++ b/sysdeps/unix/sysv/linux/internal_accept4.S
+@@ -1,8 +1,18 @@
+ #include <kernel-features.h>
+ #include <sys/syscall.h>
++
++/* Do not use the accept4 syscall on socketcall architectures unless
++   it was added at the same time as the socketcall support or can be
++   assumed to be present.  */
++#if defined __ASSUME_SOCKETCALL \
++    && !defined __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL \
++    && !defined __ASSUME_ACCEPT4_SYSCALL
++# undef __NR_accept4
++#endif
++
+ #if !defined __NR_accept4 && defined __NR_socketcall
+ # define socket	accept4
+-# ifdef __ASSUME_ACCEPT4
++# ifdef __ASSUME_ACCEPT4_SOCKETCALL
+ #  define __socket accept4
+ # else
+ #  define __socket __internal_accept4
+--- a/sysdeps/unix/sysv/linux/kernel-features.h
++++ b/sysdeps/unix/sysv/linux/kernel-features.h
+@@ -85,6 +85,18 @@
+ # define __ASSUME_SENDFILE		1
+ #endif
+ 
++/* Some architectures use the socketcall multiplexer for some or all
++   socket-related operations, via a socket.S file in glibc, instead of
++   separate syscalls.  __ASSUME_SOCKETCALL is defined for such
++   architectures.  */
++#if defined __i386__ \
++    || defined __powerpc__ \
++    || defined __s390__ \
++    || defined __sh__ \
++    || defined __sparc__
++# define __ASSUME_SOCKETCALL		1
++#endif
++
+ /* Only very old kernels had no real symlinks for terminal descriptors
+    in /proc/self/fd.  */
+ #if __LINUX_KERNEL_VERSION >= 131584
+@@ -498,10 +510,36 @@
+ # define __ASSUME_SIGNALFD4	1
+ #endif
+ 
+-/* Support for the accept4 syscall was added in 2.6.28.  */
+-#if __LINUX_KERNEL_VERSION >= 0x02061c \
+-    && (defined __i386__ || defined __x86_64__ || defined __powerpc__ \
+-	|| defined __sparc__ || defined __s390__)
++/* Support for accept4 functionality was added in 2.6.28, but for some
++   architectures using a separate syscall rather than socketcall that
++   syscall was only added later, and some architectures first had
++   socketcall support then a separate syscall.  Define
++   __ASSUME_ACCEPT4_SOCKETCALL if glibc uses socketcall on this
++   architecture and accept4 is available through socketcall,
++   __ASSUME_ACCEPT4_SYSCALL if it is available through a separate
++   syscall, __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL if it became
++   available through a separate syscall at the same time as through
++   socketcall, and __ASSUME_ACCEPT4 if the accept4 function is known
++   to work.  */
++#if __LINUX_KERNEL_VERSION >= 0x02061c && defined __ASSUME_SOCKETCALL
++# define __ASSUME_ACCEPT4_SOCKETCALL	1
++#endif
++
++/* The accept4 syscall was added for x86_64 and SPARC in 2.6.28,
++   for PowerPC and SH in 2.6.37, and for IA64 in 3.3.  */
++#if (__LINUX_KERNEL_VERSION >= 0x02061c			\
++     && (defined __x86_64__ || defined __sparc__))	\
++    || (__LINUX_KERNEL_VERSION >= 0x020625		\
++	&& (defined __powerpc__ || defined __sh__))	\
++    || (__LINUX_KERNEL_VERSION >= 0x030300		\
++	&& (defined __ia64))
++# define __ASSUME_ACCEPT4_SYSCALL	1
++#endif
++#ifdef __sparc__
++# define __ASSUME_ACCEPT4_SYSCALL_WITH_SOCKETCALL	1
++#endif
++
++#if defined __ASSUME_ACCEPT4_SOCKETCALL || defined __ASSUME_ACCEPT4_SYSCALL
+ # define __ASSUME_ACCEPT4	1
+ #endif
+ 
+@@ -526,8 +564,26 @@
+ # define __ASSUME_F_GETOWN_EX	1
+ #endif
+ 
+-/* Support for the recvmmsg syscall was added in 2.6.33.  */
+-#if __LINUX_KERNEL_VERSION >= 0x020621
++/* Support for recvmmsg functionality was added in 2.6.33.  The macros
++   defined correspond to those for accept4.  */
++#if __LINUX_KERNEL_VERSION >= 0x020621 && defined __ASSUME_SOCKETCALL
++# define __ASSUME_RECVMMSG_SOCKETCALL	1
++#endif
++
++/* The recvmmsg syscall was added for i386, x86_64n SPARC and IA64 in
++   2.6.33, and for PowerPC and SH in 2.6.37.  */
++#if (__LINUX_KERNEL_VERSION >= 0x020621			\
++     && (defined __i386__ || defined __x86_64__ || defined __sparc__	 \
++	 || defined __ia64__))	 \
++    || (__LINUX_KERNEL_VERSION >= 0x020625		\
++	&& (defined __powerpc__ || defined __sh__))
++# define __ASSUME_RECVMMSG_SYSCALL	1
++#endif
++#if defined __i386__ || defined __sparc__
++# define __ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL	1
++#endif
++
++#if defined __ASSUME_RECVMMSG_SOCKETCALL || defined __ASSUME_RECVMMSG_SYSCALL
+ # define __ASSUME_RECVMMSG	1
+ #endif
+ 
+--- a/ports/sysdeps/unix/sysv/linux/m68k/kernel-features.h
++++ b/ports/sysdeps/unix/sysv/linux/m68k/kernel-features.h
+@@ -27,6 +27,9 @@
+ # define __ASSUME_VFORK_SYSCALL		1
+ #endif
+ 
++/* m68k uses socketcall.  */
++#define __ASSUME_SOCKETCALL	1
++
+ /* Many syscalls were added in 2.6.10 for m68k.  */
+ #if __LINUX_KERNEL_VERSION >= 132618
+ # define __ASSUME_TGKILL	1
+--- a/ports/sysdeps/unix/sysv/linux/mips/kernel-features.h
++++ b/ports/sysdeps/unix/sysv/linux/mips/kernel-features.h
+@@ -37,6 +37,16 @@
+ # define __ASSUME_SIGNALFD4	1
+ #endif
+ 
++/* Support for the accept4 syscall was added in 2.6.31.  */
++#if __LINUX_KERNEL_VERSION >= 0x02061f
++# define __ASSUME_ACCEPT4_SYSCALL	1
++#endif
++
++/* Support for the recvmmsg syscall was added in 2.6.33.  */
++#if __LINUX_KERNEL_VERSION >= 0x020621
++# define __ASSUME_RECVMMSG_SYSCALL	1
++#endif
++
+ #include_next <kernel-features.h>
+ 
+ /* The n32 syscall ABI did not have a getdents64 syscall until
+--- a/sysdeps/unix/sysv/linux/internal_recvmmsg.S
++++ b/sysdeps/unix/sysv/linux/internal_recvmmsg.S
+@@ -1,8 +1,18 @@
+ #include <kernel-features.h>
+ #include <sys/syscall.h>
++
++/* Do not use the recvmmsg syscall on socketcall architectures unless
++   it was added at the same time as the socketcall support or can be
++   assumed to be present.  */
++#if defined __ASSUME_SOCKETCALL \
++    && !defined __ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL \
++    && !defined __ASSUME_RECVMMSG_SYSCALL
++# undef __NR_recvmmsg
++#endif
++
+ #if !defined __NR_recvmmsg && defined __NR_socketcall
+ # define socket	recvmmsg
+-# ifdef __ASSUME_RECVMMSG
++# ifdef __ASSUME_RECVMMSG_SOCKETCALL
+ #  define __socket recvmmsg
+ # else
+ #  define __socket __internal_recvmmsg
+--- a/sysdeps/unix/sysv/linux/recvmmsg.c
++++ b/sysdeps/unix/sysv/linux/recvmmsg.c
+@@ -24,6 +24,14 @@
+ #include <sys/syscall.h>
+ #include <kernel-features.h>
+ 
++/* Do not use the recvmmsg syscall on socketcall architectures unless
++   it was added at the same time as the socketcall support or can be
++   assumed to be present.  */
++#if defined __ASSUME_SOCKETCALL \
++    && !defined __ASSUME_RECVMMSG_SYSCALL_WITH_SOCKETCALL \
++    && !defined __ASSUME_RECVMMSG_SYSCALL
++# undef __NR_recvmmsg
++#endif
+ 
+ #ifdef __NR_recvmmsg
+ int
+@@ -42,7 +50,7 @@
+   return result;
+ }
+ #elif defined __NR_socketcall
+-# ifndef __ASSUME_RECVMMSG
++# ifndef __ASSUME_RECVMMSG_SOCKETCALL
+ extern int __internal_recvmmsg (int fd, struct mmsghdr *vmessages,
+ 				unsigned int vlen, int flags,
+ 				const struct timespec *tmo)
+@@ -86,7 +94,8 @@
+   return -1;
+ }
+ # else
+-/* When __ASSUME_RECVMMSG recvmmsg is defined in internal_recvmmsg.S.  */
++/* When __ASSUME_RECVMMSG_SOCKETCALL recvmmsg is defined in
++   internal_recvmmsg.S.  */
+ # endif
+ #else
+ int

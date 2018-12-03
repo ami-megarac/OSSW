@@ -1,0 +1,27 @@
+2015-02-26  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #18032]
+	* posix/fnmatch_loop.c (FCT): Remove extra increment when skipping
+	over collating symbol inside a bracket expression.  Minor cleanup.
+
+diff --git a/posix/fnmatch_loop.c b/posix/fnmatch_loop.c
+index f79d051..f11d0f1 100644
+--- a/posix/fnmatch_loop.c
++++ b/posix/fnmatch_loop.c
+@@ -951,14 +951,13 @@ FCT (pattern, string, string_end, no_leading_period, flags, ends, alloca_used)
+ 		  }
+ 		else if (c == L('[') && *p == L('.'))
+ 		  {
+-		    ++p;
+ 		    while (1)
+ 		      {
+ 			c = *++p;
+-			if (c == '\0')
++			if (c == L('\0'))
+ 			  return FNM_NOMATCH;
+ 
+-			if (*p == L('.') && p[1] == L(']'))
++			if (c == L('.') && p[1] == L(']'))
+ 			  break;
+ 		      }
+ 		    p += 2;

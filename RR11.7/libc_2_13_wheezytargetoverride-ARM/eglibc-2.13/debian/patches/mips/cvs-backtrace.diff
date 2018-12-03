@@ -1,0 +1,20 @@
+2012-01-03  Tom de Vries  <tom@codesourcery.com>
+
+	* ports/sysdeps/mips/backtrace.c: New file, including ia64 backtrace.c.
+	* ports/sysdeps/mips/Makefile: Compile backtrace.c with -funwind-tables.
+
+--- a/ports/sysdeps/mips/Makefile
++++ b/ports/sysdeps/mips/Makefile
+@@ -11,4 +11,8 @@ ifeq ($(subdir),rt)
+ librt-sysdep_routines += rt-sysdep
+ endif
+ 
++ifeq ($(subdir),debug)
++CFLAGS-backtrace.c += -funwind-tables
++endif
++
+ ASFLAGS-.os += $(pic-ccflag)
+--- /dev/null
++++ b/ports/sysdeps/mips/backtrace.c
+@@ -0,0 +1 @@
++#include <sysdeps/ia64/backtrace.c>
