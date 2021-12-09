@@ -1,0 +1,33 @@
+diff -Naur u-boot-2019.04/config.mk uboot/config.mk
+--- u-boot-2019.04/config.mk	2019-07-22 22:57:53.000000000 -0400
++++ uboot/config.mk	2019-08-28 11:30:32.613448077 -0400
+@@ -69,6 +69,7 @@
+ 
+ PLATFORM_CPPFLAGS += $(RELFLAGS)
+ PLATFORM_CPPFLAGS += -pipe
++PLATFORM_CPPFLAGS += -include ${SPXINC}/projdef.h -Wall -Werror 
+ 
+ LDFLAGS += $(PLATFORM_LDFLAGS)
+ LDFLAGS_FINAL += -Bstatic
+diff -Naur u-boot-2019.04/Makefile uboot/Makefile
+--- u-boot-2019.04/Makefile	2019-07-22 22:57:52.000000000 -0400
++++ uboot/Makefile	2019-08-28 12:28:34.562698941 -0400
+@@ -729,6 +729,7 @@
+ libs-y += cmd/
+ libs-y += common/
+ libs-y += env/
++libs-y += oem/
+ libs-$(CONFIG_API) += api/
+ libs-$(CONFIG_HAS_POST) += post/
+ libs-$(CONFIG_UNIT_TEST) += test/ test/dm/
+@@ -1007,7 +1008,7 @@
+ 	@# Check that this build does not use CONFIG options that we do not
+ 	@# know about unless they are in Kconfig. All the existing CONFIG
+ 	@# options are whitelisted, so new ones should not be added.
+-	$(call cmd,cfgcheck,u-boot.cfg)
++#	$(call cmd,cfgcheck,u-boot.cfg)
+ 
+ PHONY += dtbs
+ dtbs: dts/dt.dtb
+
+

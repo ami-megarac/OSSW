@@ -1,0 +1,13 @@
+diff -Naur u-boot-2019.04/env/common.c uboot/env/common.c
+--- u-boot-2019.04/env/common.c	2019-07-22 22:57:54.000000000 -0400
++++ uboot/env/common.c	2019-08-29 11:00:08.910154394 -0400
+@@ -82,6 +82,9 @@
+ 		pr_err("## Error: Environment import failed: errno = %d\n",
+ 		       errno);
+ 
++
++	env_save();
++
+ 	gd->flags |= GD_FLG_ENV_READY;
+ 	gd->flags |= GD_FLG_ENV_DEFAULT;
+ }

@@ -1,0 +1,12 @@
+diff -Naur u-boot-2019.04/env/common.c u-boot-2019.04.new/env/common.c
+--- u-boot-2019.04/env/common.c	2019-10-18 16:46:56.734973665 -0400
++++ u-boot-2019.04.new/env/common.c	2019-10-18 16:24:17.000000000 -0400
+@@ -77,7 +77,7 @@
+ 	}
+ 
+ 	if (himport_r(&env_htab, (char *)default_environment,
+-			sizeof(default_environment), '\0', flags, 0,
++			ENV_SIZE, '\0', flags, 0,
+ 			0, NULL) == 0)
+ 		pr_err("## Error: Environment import failed: errno = %d\n",
+ 		       errno);

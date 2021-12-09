@@ -1,0 +1,204 @@
+diff -Naur linux-5.2.8/drivers/mtd/parsers/Kconfig linux/drivers/mtd/parsers/Kconfig
+--- linux-5.2.8/drivers/mtd/parsers/Kconfig	2019-08-20 12:37:55.000000000 -0400
++++ linux/drivers/mtd/parsers/Kconfig	2019-09-05 15:33:00.892693485 -0400
+@@ -26,6 +26,13 @@
+ 	  for your particular device. It won't happen automatically. The
+ 	  'physmap' map driver (CONFIG_MTD_PHYSMAP) does this, for example.
+ 
++config MTD_SPX_PARTS
++	tristate "Parser for SPX FMH Partitions"
++	help
++	  SPX FMH is a dyanmic parition scheme. This is the parser 
++	  to create the FMH paritions. Called from device tree.
++	  The parser is called from device tree 
++
+ config MTD_PARSER_TRX
+ 	tristate "Parser for TRX format partitions"
+ 	depends on MTD && (BCM47XX || ARCH_BCM_5301X || COMPILE_TEST)
+diff -Naur linux-5.2.8/drivers/mtd/parsers/Makefile linux/drivers/mtd/parsers/Makefile
+--- linux-5.2.8/drivers/mtd/parsers/Makefile	2019-08-20 12:37:55.000000000 -0400
++++ linux/drivers/mtd/parsers/Makefile	2019-09-06 09:40:02.000000000 -0400
+@@ -4,3 +4,4 @@
+ obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+ obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
+ obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
++obj-$(CONFIG_MTD_SPX_PARTS)    		+= spx-fmh.o fmhcore.o
+diff -Naur linux-5.2.8/drivers/mtd/parsers/spx-fmh.c linux/drivers/mtd/parsers/spx-fmh.c
+--- linux-5.2.8/drivers/mtd/parsers/spx-fmh.c	1969-12-31 19:00:00.000000000 -0500
++++ linux/drivers/mtd/parsers/spx-fmh.c	2019-09-06 09:34:21.642186894 -0400
+@@ -0,0 +1,175 @@
++/*
++ * spx_fmh.c    
++ *		   Creates MTD Devices for each of the file system  modules
++ * 		   present in the FMH Image
++ * 			     
++ * Copyright 2019 American Megatrends Inc.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/init.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++
++#include "fmh.h"
++
++
++
++#define MAX_BANKS CONFIG_SPX_FEATURE_GLOBAL_FLASH_BANKS	     /* TODO: Not using now. Code to be added when we have a platform to test */
++/*used by helper */
++/*TODO: Find a way to get all flash info from generic kernel mtd functions */
++int totalbanks=0;
++struct mtd_info *ractrends_mtd[MAX_BANKS];
++EXPORT_SYMBOL(ractrends_mtd);
++
++static
++int
++GetFMHPartitions(struct mtd_info *mtd,unsigned long FlashStart, uint64_t FlashSize, uint32_t SectorSize,struct mtd_partition  *parts)
++{
++
++	FMH *fmh;
++	MODULE_INFO *mod;
++	unsigned short ModuleType;
++
++	int PartCount=0;
++	unsigned long sec;
++	unsigned long startingsector=0,endingsector=0;
++
++	endingsector=(unsigned long)div_u64(FlashSize,SectorSize);
++
++	
++	/* Create a MTD for full Flash */
++#if 0 	/* DT Kernel creates "mtd0"  for full flash */
++	parts[PartCount].name = kstrndup("fullpart",16,GFP_KERNEL);
++	if (!parts[PartCount].name)
++		return 0;
++    parts[PartCount].size = FlashSize;
++    parts[PartCount].offset = 0;
++    parts[PartCount].mask_flags = 0;
++    parts[PartCount].types=0;
++    parts[PartCount].of_node = 0;
++	printk("MTD Partition %d : %s @ 0x%lx of Size 0x%lx\n",PartCount,parts[PartCount].name,
++								(unsigned long)parts[PartCount].offset,(unsigned long)parts[PartCount].size);
++	PartCount++;
++#endif
++
++
++	for (sec=startingsector;sec<endingsector;)
++	{
++		fmh = ScanforFMH((unsigned char *)(FlashStart+(sec*SectorSize)),(unsigned long)SectorSize,mtd);
++		if (fmh == NULL)
++		{
++			sec++;
++			continue;	
++		}
++		mod = &(fmh->Module_Info);
++
++		/* Check if module type is JFFS or JFFS2 */
++		ModuleType = le16_to_host(mod->Module_Type);
++		if ((ModuleType != MODULE_JFFS) && (ModuleType != MODULE_JFFS2) && 
++			(ModuleType != MODULE_INITRD_CRAMFS) && (ModuleType != MODULE_CRAMFS)  && 
++			(ModuleType != MODULE_SQUASHFS) && (ModuleType != MODULE_INITRD_SQUASHFS) &&
++		    (ModuleType != MODULE_CACHE))
++		{
++			if ((sec*SectorSize) > le32_to_host(mod->Module_Location))		/* AltFMH */
++				sec++;
++			else
++				sec+=(unsigned long)div_u64(le32_to_host(fmh->FMH_AllocatedSize),SectorSize);
++			continue;
++		}
++
++		/* Fill the parition information */
++		parts[PartCount].name = kstrndup(mod->Module_Name,16, GFP_KERNEL);
++ 		if (!parts[PartCount].name)
++        	return 0;
++		parts[PartCount].mask_flags = 0;
++    	parts[PartCount].types=0;
++    	parts[PartCount].of_node = 0;
++		parts[PartCount].size = le32_to_host(mod->Module_Size);
++
++		if ((fmh->FMH_Ver_Major == 1) && (fmh->FMH_Ver_Minor >= 8))
++			parts[PartCount].offset = le32_to_host(mod->Module_Location);
++		else
++			parts[PartCount].offset = (sec*SectorSize)+ le32_to_host(mod->Module_Location);
++
++		printk("MTD Partition %d : %s @ 0x%lx of Size 0x%lx\n",PartCount,parts[PartCount].name,
++								(unsigned long)parts[PartCount].offset,(unsigned long)parts[PartCount].size);
++
++
++		if ((sec*SectorSize) > le32_to_host(mod->Module_Location))   /* AltFMH */
++			sec++;
++		else
++			sec+=(unsigned long)div_u64(le32_to_host(fmh->FMH_AllocatedSize),SectorSize);
++		PartCount++;
++	}
++
++	//printk("PartCount is %d\n",PartCount);
++	return  PartCount;
++}
++
++
++static int 
++parse_fmh_partitions(struct mtd_info *mtd,
++				const struct mtd_partition **pparts,
++				struct mtd_part_parser_data *data)
++{
++
++	#define MAX_PARTS 16		/* Paritions Per Bank */
++
++	struct mtd_partition tmp_parts[MAX_PARTS];
++	struct mtd_partition *parts;
++	int PartCount;
++	int bank;
++
++	/* Initialize all on first call */
++	if (totalbanks == 0)
++	{
++ 		for (bank = 0; bank < MAX_BANKS; bank++)
++        	ractrends_mtd[bank] = 0;
++	}
++	ractrends_mtd[totalbanks++]=mtd;
++
++
++	PartCount = GetFMHPartitions(mtd,0,mtd->size,mtd->erasesize,tmp_parts);
++	if (!PartCount)
++		return -ENOMEM;
++
++	/* Allocate memory and copy information */
++    parts = kzalloc(PartCount * sizeof(struct mtd_partition), GFP_KERNEL);
++	if (!parts)
++		return -ENOMEM;
++	memcpy(parts,tmp_parts,PartCount*sizeof(struct mtd_partition));
++
++	/* Return list of paritiosn and count */
++	*pparts = parts;
++	return PartCount;
++}
++
++
++static const struct of_device_id mtd_parser_fmh_of_match_table[] = 
++{
++	{ .compatible = "ami,spx-fmh"},
++	{},
++};
++
++MODULE_DEVICE_TABLE(of, mtd_parser_fmh_of_match_table);
++
++static struct mtd_part_parser fmh_parser = 
++{
++	.parse_fn = parse_fmh_partitions,
++	.name = "spx-fmh",
++	.of_match_table = mtd_parser_fmh_of_match_table,
++};
++module_mtd_part_parser(fmh_parser);
++
++MODULE_AUTHOR("American Megatrends International");
++MODULE_DESCRIPTION("SPX FMH partition parser");
++MODULE_LICENSE("GPL");
++

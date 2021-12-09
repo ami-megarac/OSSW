@@ -1,0 +1,19 @@
+--- linux-5.2.8/Makefile	2019-08-20 12:37:52.000000000 -0400
++++ linux/Makefile	2019-08-28 21:31:17.947202450 -0400
+@@ -2,7 +2,7 @@
+ VERSION = 5
+ PATCHLEVEL = 2
+ SUBLEVEL = 8
+-EXTRAVERSION =
++EXTRAVERSION = -ami
+ NAME = Bobtail Squid
+ 
+ # *DOCUMENTATION*
+@@ -451,6 +451,7 @@
+ 		-I$(objtree)/arch/$(SRCARCH)/include/generated \
+ 		$(if $(filter .,$(srctree)),,-I$(srctree)/include) \
+ 		-I$(objtree)/include \
++		-include ${SPXINC}/projdef.h \
+ 		$(USERINCLUDE)
+ 
+ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE

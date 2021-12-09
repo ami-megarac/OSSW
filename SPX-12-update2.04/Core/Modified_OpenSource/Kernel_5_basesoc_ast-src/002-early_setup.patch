@@ -1,0 +1,154 @@
+diff -Naur linux-5.2.8/arch/arm/kernel/devtree.c linux/arch/arm/kernel/devtree.c
+--- linux-5.2.8/arch/arm/kernel/devtree.c	2019-08-20 12:37:53.000000000 -0400
++++ linux/arch/arm/kernel/devtree.c	2019-09-05 13:27:35.811167204 -0400
+@@ -208,6 +208,12 @@
+  * If a dtb was passed to the kernel in r2, then use it to choose the
+  * correct machine_desc and to setup the system.
+  */
++
++#if defined(CONFIG_SOC_ASPEED)
++	extern void aspeed_map_common_io(void);
++	extern void aspeed_init(void);
++#endif
++
+ const struct machine_desc * __init setup_machine_fdt(unsigned int dt_phys)
+ {
+ 	const struct machine_desc *mdesc, *mdesc_best = NULL;
+@@ -216,6 +222,11 @@
+ 	DT_MACHINE_START(GENERIC_DT, "Generic DT based system")
+ 		.l2c_aux_val = 0x0,
+ 		.l2c_aux_mask = ~0x0,
++	#if defined(CONFIG_SOC_ASPEED)
++    	.map_io     = aspeed_map_common_io,
++		.init_machine = aspeed_init,
++	#endif 
++
+ 	MACHINE_END
+ 
+ 	mdesc_best = &__mach_desc_GENERIC_DT;
+diff -Naur linux-5.2.8/arch/arm/mach-aspeed/Makefile linux/arch/arm/mach-aspeed/Makefile
+--- linux-5.2.8/arch/arm/mach-aspeed/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ linux/arch/arm/mach-aspeed/Makefile	2019-09-05 13:00:34.591443270 -0400
+@@ -0,0 +1 @@
++obj-y                                   += setup.o
+diff -Naur linux-5.2.8/arch/arm/mach-aspeed/setup.c linux/arch/arm/mach-aspeed/setup.c
+--- linux-5.2.8/arch/arm/mach-aspeed/setup.c	1969-12-31 19:00:00.000000000 -0500
++++ linux/arch/arm/mach-aspeed/setup.c	2019-09-05 13:25:47.523440906 -0400
+@@ -0,0 +1,106 @@
++/****************************************************************
++ ****************************************************************
++ **                                                            **
++ **    (C)Copyright 2019, American Megatrends Inc.        **
++ **                                                            **
++ **            All Rights Reserved.                            **
++ **                                                            **
++ **        5555 Oakbrook Pkwy Suite 200, Norcross              **
++ **                                                            **
++ **        Georgia - 30093, USA. Phone-(770)-246-8600.         **
++ **                                                            **
++ ****************************************************************
++ ****************************************************************/
++
++#include <linux/kernel.h>
++#include <linux/mm.h>
++#include <mach/platform.h>
++#include <asm/mach/map.h>
++#include <asm/system_misc.h>
++
++
++/* The devcices handled by device tree need not be mapped. So thet are commented out */
++/* Once all deices are hanled by device tree, the entire mapping can be removed */
++
++static struct map_desc aspeed_std_desc[] __initdata = 
++{
++//  { AST_SMC_VA_BASE,             __phys_to_pfn(AST_SMC_BASE),            SZ_4K,       MT_DEVICE},
++//  { AST_FMC_VA_BASE,             __phys_to_pfn(AST_FMC_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_AHBC_VA_BASE,            __phys_to_pfn(AST_AHBC_BASE),           SZ_64K,      MT_DEVICE},
++//  { AST_MAC1_VA_BASE,            __phys_to_pfn(AST_MAC1_BASE),           SZ_64K,      MT_DEVICE},
++//  { AST_MAC2_VA_BASE,            __phys_to_pfn(AST_MAC2_BASE),           SZ_64K,      MT_DEVICE}, 
++//  { AST_MAC3_VA_BASE,            __phys_to_pfn(AST_MAC3_BASE),           SZ_64K,      MT_DEVICE},  
++//  { AST_MAC4_VA_BASE,            __phys_to_pfn(AST_MAC4_BASE),           SZ_64K,      MT_DEVICE},    
++    { AST_USB20_VA_BASE,           __phys_to_pfn(AST_USB20_BASE),          SZ_4K,       MT_DEVICE},
++    { AST_USB11_VA_BASE,           __phys_to_pfn(AST_USB11_BASE),          SZ_64K,      MT_DEVICE},
++    { AST_IC_VA_BASE,              __phys_to_pfn(AST_IC_BASE),             SZ_64K,      MT_DEVICE},
++    { AST_SDRAMC_VA_BASE,          __phys_to_pfn(AST_SDRAMC_BASE),         SZ_4K,       MT_DEVICE},
++    { AST_SCU_VA_BASE,             __phys_to_pfn(AST_SCU_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_CRYPTO_VA_BASE,          __phys_to_pfn(AST_CRYPTO_BASE),         SZ_4K,       MT_DEVICE},
++    { AST_JTAG_VA_BASE,            __phys_to_pfn(AST_JTAG_BASE),           SZ_4K,       MT_DEVICE},
++    { AST_GRAPHIC_VA_BASE,         __phys_to_pfn(AST_GRAPHIC_BASE),        SZ_4K,       MT_DEVICE},
++    { AST_ADC_VA_BASE,             __phys_to_pfn(AST_ADC_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_AHB_TO_PBUS_VA_BASE,     __phys_to_pfn(AST_AHB_TO_PBUS_BASE),    SZ_64K,      MT_DEVICE},
++    { AST_MDMA_VA_BASE,            __phys_to_pfn(AST_MDMA_BASE),           SZ_64K,      MT_DEVICE},
++    { AST_2D_VA_BASE,              __phys_to_pfn(AST_2D_BASE),             SZ_64K,      MT_DEVICE},
++    { AST_GPIO_VA_BASE,            __phys_to_pfn(AST_GPIO_BASE),           SZ_4K,       MT_DEVICE},
++    { AST_RTC_VA_BASE,             __phys_to_pfn(AST_RTC_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_TIMER_VA_BASE,           __phys_to_pfn(AST_TIMER_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART1_VA_BASE,           __phys_to_pfn(AST_UART1_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART2_VA_BASE,           __phys_to_pfn(AST_UART2_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART3_VA_BASE,           __phys_to_pfn(AST_UART3_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART4_VA_BASE,           __phys_to_pfn(AST_UART4_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART5_VA_BASE,           __phys_to_pfn(AST_UART5_BASE),          SZ_4K,       MT_DEVICE},
++    { AST_WDT_VA_BASE,             __phys_to_pfn(AST_WDT_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_PWM_VA_BASE,             __phys_to_pfn(AST_PWM_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_I2C_VA_BASE,             __phys_to_pfn(AST_I2C_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_DMA_VA_BASE,             __phys_to_pfn(AST_DMA_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_MCTP_VA_BASE,            __phys_to_pfn(AST_MCTP_BASE),           SZ_4K,       MT_DEVICE},
++    { AST_LPC_PLUS_VA_BASE,        __phys_to_pfn(AST_LPC_PLUS_BASE),       SZ_4K,       MT_DEVICE},
++    { AST_VIDEO_VA_BASE,           __phys_to_pfn(AST_VIDEO_BASE),          SZ_128K,     MT_DEVICE},
++    { AST_PECI_VA_BASE,            __phys_to_pfn(AST_PECI_BASE),           SZ_4K,       MT_DEVICE},
++    { AST_VUART0_VA_BASE,          __phys_to_pfn(AST_VUART0_BASE),         SZ_4K,       MT_DEVICE},
++    { AST_VUART1_VA_BASE,          __phys_to_pfn(AST_VUART1_BASE),         SZ_4K,       MT_DEVICE},
++    { AST_LPC_VA_BASE,             __phys_to_pfn(AST_LPC_BASE),            SZ_4K,       MT_DEVICE},
++    { AST_USB1_VA_BASE,            __phys_to_pfn(AST_USB1_BASE),           SZ_4K,       MT_DEVICE},
++//  { AST_UART6_VA_BASE,           __phys_to_pfn(AST_UART6_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART7_VA_BASE,           __phys_to_pfn(AST_UART7_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART8_VA_BASE,           __phys_to_pfn(AST_UART8_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART9_VA_BASE,           __phys_to_pfn(AST_UART9_BASE),          SZ_4K,       MT_DEVICE},
++//  { AST_UART10_VA_BASE,          __phys_to_pfn(AST_UART10_BASE),         SZ_4K,       MT_DEVICE},
++//  { AST_UART11_VA_BASE,          __phys_to_pfn(AST_UART11_BASE),         SZ_4K,       MT_DEVICE},
++//  { AST_UART12_VA_BASE,          __phys_to_pfn(AST_UART12_BASE),         SZ_4K,       MT_DEVICE},
++//  { AST_UART13_VA_BASE,          __phys_to_pfn(AST_UART13_BASE),         SZ_4K,       MT_DEVICE},
++//  { AST_UART_UDMA_VA_BASE,       __phys_to_pfn(AST_UART_UDMA_BASE),      SZ_4K,       MT_DEVICE},
++};
++
++
++void
++__init aspeed_map_common_io(void)
++{
++	iotable_init(aspeed_std_desc, ARRAY_SIZE(aspeed_std_desc));
++ 	return;
++}
++
++
++
++/*--------------------------------------------------------------------------------------------------------*/
++			
++static void 
++ast_arch_reset(enum reboot_mode reboot_mode, const char *cmd)
++{
++	/* Use WDT to restart system  */
++	*(volatile unsigned long *) (WDT_RELOAD_REG) = 0x10;
++	*(volatile unsigned long *) (WDT_CNT_RESTART_REG) = 0x4755;
++	*(volatile unsigned long *) (WDT_CONTROL_REG) = 0x03;
++	return;	
++}
++
++
++
++void
++__init aspeed_init(void)
++{
++    arm_pm_restart = ast_arch_reset;
++ 	return;
++}
+diff -Naur linux-5.2.8/arch/arm/Makefile linux/arch/arm/Makefile
+--- linux-5.2.8/arch/arm/Makefile	2019-08-20 12:37:52.000000000 -0400
++++ linux/arch/arm/Makefile	2019-09-04 22:36:58.356572537 -0400
+@@ -227,6 +227,7 @@
+ machine-$(CONFIG_ARCH_ZX)		+= zx
+ machine-$(CONFIG_ARCH_ZYNQ)		+= zynq
+ machine-$(CONFIG_PLAT_SPEAR)		+= spear
++machine-$(CONFIG_ARCH_ASPEED)       	+= aspeed
+ 
+ # Platform directory name.  This list is sorted alphanumerically
+ # by CONFIG_* macro name.

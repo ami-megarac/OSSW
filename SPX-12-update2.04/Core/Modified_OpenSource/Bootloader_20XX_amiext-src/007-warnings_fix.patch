@@ -1,0 +1,35 @@
+diff -Naur u-boot-2019.04/drivers/ram/aspeed/sdram_ast2500.c uboot/drivers/ram/aspeed/sdram_ast2500.c
+--- u-boot-2019.04/drivers/ram/aspeed/sdram_ast2500.c	2019-07-22 22:57:53.000000000 -0400
++++ uboot/drivers/ram/aspeed/sdram_ast2500.c	2019-08-28 11:13:43.726192339 -0400
+@@ -340,7 +340,9 @@
+ 
+ static int ast2500_sdrammc_probe(struct udevice *dev)
+ {
+-	struct reset_ctl reset_ctl;
++#if 0
++	struct reset_ctl reset_ctl; 
++#endif
+ 	struct dram_info *priv = (struct dram_info *)dev_get_priv(dev);
+ 	struct ast2500_sdrammc_regs *regs = priv->regs;
+ 	struct udevice *clk_dev;
+@@ -428,7 +430,7 @@
+ static int ast2500_sdrammc_ofdata_to_platdata(struct udevice *dev)
+ {
+ 	struct dram_info *priv = dev_get_priv(dev);
+-	int ret;
++//	int ret;	//unused
+ 
+ 	priv->regs = (void *)(uintptr_t)devfdt_get_addr_index(dev, 0);
+ 	priv->phy = (void *)(uintptr_t)devfdt_get_addr_index(dev, 1);
+diff -Naur u-boot-2019.04/drivers/sysreset/sysreset_ast.c uboot/drivers/sysreset/sysreset_ast.c
+--- u-boot-2019.04/drivers/sysreset/sysreset_ast.c	2019-07-22 22:57:53.000000000 -0400
++++ uboot/drivers/sysreset/sysreset_ast.c	2019-08-28 11:14:11.629789986 -0400
+@@ -14,7 +14,7 @@
+ static int ast_sysreset_request(struct udevice *dev, enum sysreset_t type)
+ {
+ 	struct udevice *wdt;
+-	u32 reset_mode;
++	u32 reset_mode=0;
+ 	int ret = uclass_first_device(UCLASS_WDT, &wdt);
+ 
+ 	if (ret)

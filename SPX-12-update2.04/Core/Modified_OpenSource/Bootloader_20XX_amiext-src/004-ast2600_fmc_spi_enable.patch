@@ -1,0 +1,11 @@
+--- u-boot-2019.04/drivers/spi/aspeed_spi.c	2019-07-22 22:57:53.000000000 -0400
++++ u-boot-2019.04.new/drivers/spi/aspeed_spi.c	2019-10-18 16:25:03.000000000 -0400
+@@ -982,7 +982,7 @@
+ 	}
+ 
+ 	if (device_is_compatible(bus, "aspeed,ast2600-fmc") || 
+-			device_is_compatible(bus, "aspeed,ast2600-fmc")) {
++			device_is_compatible(bus, "aspeed,ast2600-spi")) {
+ 		priv->new_ver = 1;
+ 	}
+ 

@@ -1,0 +1,10 @@
+--- linux/include/linux/hw_random.h	2014-08-14 07:08:34.000000000 +0530
++++ linux_mod/include/linux/hw_random.h	2019-03-04 12:42:07.033572749 +0530
+@@ -47,5 +47,7 @@
+ extern int hwrng_register(struct hwrng *rng);
+ /** Unregister a Hardware Random Number Generator driver. */
+ extern void hwrng_unregister(struct hwrng *rng);
++/** Feed random bits into the pool. */
++extern void add_hwgenerator_randomness(const char *buffer, size_t count, size_t entropy);
+ 
+ #endif /* LINUX_HWRANDOM_H_ */

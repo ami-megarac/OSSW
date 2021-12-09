@@ -1,0 +1,41 @@
+diff -Naur linux_old/drivers/net/ethernet/aspeed/ast_ether.c linux/drivers/net/ethernet/aspeed/ast_ether.c
+--- linux_old/drivers/net/ethernet/aspeed/ast_ether.c	2018-11-29 18:03:26.740724144 +0800
++++ linux/drivers/net/ethernet/aspeed/ast_ether.c	2018-11-29 18:03:42.600524450 +0800
+@@ -895,7 +895,7 @@
+             else {
+ 				has_first = 1;
+ 
+-				if (status & (RX_DESC_RX_ERR | RX_DESC_CRC_ERR | RX_DESC_FTL | RX_DESC_RUNT | RX_DESC_RX_ODD_NB | RX_DESC_IPCS_FAIL )) { /* There was an error. */
++				if (status & (RX_DESC_RX_ERR | RX_DESC_CRC_ERR | RX_DESC_FTL | RX_DESC_RX_ODD_NB | RX_DESC_IPCS_FAIL )) { /* There was an error. */
+ 					priv->stats.rx_errors ++;
+ 					has_error = 1;
+ 				}            	
+@@ -941,16 +941,23 @@
+ 			ast_ether_rx_csum(skb, &priv->rx_desc[entry]);
+ 			skb_put(skb, pkt_len); /* reflect the DMA operation result */
+ 			skb->protocol = eth_type_trans(skb, dev);
++			
++			/*Allowing lessthan 64 bytes for VLAN, to fix 2500 MAC issue*/
++			if ((status & RX_DESC_RUNT) && (cpu_to_be16(skb->protocol) != VLAN_PROTOCOL)) {
++				kfree_skb(skb);
++			}
++			else {
+ 
+ #ifdef CONFIG_ASTMAC100_NAPI
+-			netif_receive_skb(skb);
++				netif_receive_skb(skb);
+ #else
+-			netif_rx(skb);
++				netif_rx(skb);
+ #endif
+ 	
+-			dev->last_rx = jiffies;
+-			priv->stats.rx_packets ++;
+-			priv->stats.rx_bytes += pkt_len;
++				dev->last_rx = jiffies;
++				priv->stats.rx_packets ++;
++				priv->stats.rx_bytes += pkt_len;
++			}
+ 		}
+ 
+ 		priv->cur_rx ++;

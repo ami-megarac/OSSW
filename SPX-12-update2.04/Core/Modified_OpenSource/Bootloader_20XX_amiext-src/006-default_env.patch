@@ -1,0 +1,33 @@
+diff -Naur u-boot-2019.04/include/configs/aspeed-common.h uboot/include/configs/aspeed-common.h
+--- u-boot-2019.04/include/configs/aspeed-common.h	2019-09-26 12:20:16.027884303 -0400
++++ uboot/include/configs/aspeed-common.h	2019-09-26 12:10:15.097823946 -0400
+@@ -11,13 +11,6 @@
+ 
+ #include <asm/arch/platform.h>
+ 
+-#define CONFIG_BOOTFILE		"all.bin"
+-
+-#define CONFIG_GATEWAYIP	192.168.0.1
+-#define CONFIG_NETMASK		255.255.255.0
+-#define CONFIG_IPADDR		192.168.0.45
+-#define CONFIG_SERVERIP		192.168.0.81
+-
+ /* Misc CPU related */
+ #define CONFIG_CMDLINE_TAG
+ #define CONFIG_SETUP_MEMORY_TAGS
+@@ -51,10 +44,14 @@
+ /*
+  * Miscellaneous configurable options
+  */
+-#define CONFIG_BOOTCOMMAND		"bootm 200a0000"
++#define CONFIG_BOOTCOMMAND		"bootfmh"
+ #define CONFIG_ENV_OVERWRITE
+ 
++#define CONFIG_SYS_BOOTMAPSZ       (256 * 1024 * 1024)
++#define CONFIG_SYS_BOOTM_LEN       (0x800000 * 2)
++
+ #define CONFIG_EXTRA_ENV_SETTINGS \
++	"autoload=no\0"			\
+ 	"verify=yes\0"	\
+ 	"spi_dma=no\0" \
+ 	""

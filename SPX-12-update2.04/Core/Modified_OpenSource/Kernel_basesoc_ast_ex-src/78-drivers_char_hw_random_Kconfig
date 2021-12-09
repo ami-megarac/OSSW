@@ -1,0 +1,38 @@
+--- linux.new/drivers/char/hw_random/Kconfig	2018-10-09 10:35:05.722288168 +0800
++++ linux/drivers/char/hw_random/Kconfig	2018-10-09 10:34:11.850288168 +0800
+@@ -2,9 +2,9 @@
+ # Hardware Random Number Generator (RNG) configuration
+ #
+ 
+-config HW_RANDOM
++menuconfig HW_RANDOM
+    tristate "Hardware Random Number Generator Core support"
+-   default m
++   default y
+    ---help---
+      Hardware Random Number Generator Core infrastructure.
+ 
+@@ -20,6 +20,16 @@
+ 
+      If unsure, say Y.
+ 
++if HW_RANDOM
++
++config HW_RANDOM_AST
++   tristate "AST HW Random Number Generator support"
++    depends on HW_RANDOM && ARCH_AST2500EVB
++    default HW_RANDOM
++   ---help---
++      This driver provides kernel-side support for the Random Number
++      Generator hardware found on aspeed SOC.
++
+ config HW_RANDOM_TIMERIOMEM
+    tristate "Timer IOMEM HW Random Number Generator support"
+    depends on HW_RANDOM && HAS_IOMEM
+@@ -352,3 +362,4 @@
+      module will be called msm-rng.
+
+      If unsure, say Y.
++endif # HW_RANDOM
+
+

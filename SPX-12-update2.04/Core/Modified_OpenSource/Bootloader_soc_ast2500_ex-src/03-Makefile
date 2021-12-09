@@ -1,0 +1,34 @@
+--- u-boot-2013.07/Makefile	2016-12-02 11:44:41.019533000 +0800
++++ uboot.new/Makefile	2016-12-02 11:27:59.197689000 +0800
+@@ -167,6 +167,10 @@
+ sinclude $(obj)include/autoconf.mk.dep
+ sinclude $(obj)include/autoconf.mk
+ 
++ifeq ($(CONFIG_SPX_FEATURE_LAN_AND_DRAM_TEST_CMD),"YES")
++SUBDIR_EXAMPLES += oem/ami/standalone/nettest
++endif
++
+ ifndef CONFIG_SANDBOX
+ SUBDIRS += $(SUBDIR_EXAMPLES)
+ endif
+@@ -340,6 +344,9 @@
+ 
+ LIBS-y+=drivers/spiflash/libspiflash.o
+ LIBS-y += oem/ami/fmh/libfmh.o
++ifeq ($(CONFIG_SPX_FEATURE_LAN_AND_DRAM_TEST_CMD),"YES")
++LIBS-y += oem/ami/standalone/libnettest.o
++endif
+ LIBS-$(CONFIG_YAFU_SUPPORT) += oem/ami/fwupdate/libfwupdate.o oem/ami/ipmi/libipmi.o
+ LIBS-$(CONFIG_NCSI_SUPPORT) += oem/ami/ncsi/libncsi.o
+ LIBS-$(CONFIG_R2C_SUPPORT) += oem/ami/r2c/libr2c.o
+@@ -365,6 +372,10 @@
+ LIBS-y += $(CPUDIR)/tegra-common/libtegra-common.o
+ endif
+ 
++ifeq ($(SOC),ast2500)
++LIBS-y += arch/$(ARCH)/cpu/astcommon/libastcommon.o
++endif
++
+ LIBS := $(addprefix $(obj),$(sort $(LIBS-y)))
+ .PHONY : $(LIBS)
+ 
